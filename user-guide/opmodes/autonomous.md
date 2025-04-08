@@ -304,6 +304,9 @@ To schedule a command, you can either call `CommandManager.INSTANCE.scheduleComm
 @Override
 public void onStartButtonPressed() {
     firstRoutine().invoke();
+    
+    // Note that you can use invoke() function only once.
+    // In order to run several routine functions put them into one new SequentialGroup() and invoke() it.
 }
 ```
 
