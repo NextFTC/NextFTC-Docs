@@ -170,7 +170,7 @@ ParallelDeadlineGroup(
 == Java
 
 ```java
-new SequentialGroup(
+new ParallelDeadlineGroup(
     deadlineCommand,
     command2,
     // vararg Command
