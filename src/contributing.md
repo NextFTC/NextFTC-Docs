@@ -143,7 +143,7 @@ For features, please do the following:
 If you had made changes to the library and would like to test them locally first
 before making a pull request, follow these steps.
 
-1. In the library rpeo, run `./gradlew deployLocal`.
+1. In the library repo, run `./gradlew deployLocal`.
 2. In your team code, in the `repositories { }` block, add `mavenLocal()`.
 3. In the `implementation` dependency for the library you changed, add `-LOCAL`
    to the end of the version.
