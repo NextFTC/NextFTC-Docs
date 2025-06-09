@@ -25,7 +25,7 @@ implementation 'dev.nextftc:hardware:1.0.0' // If you would like to use the hard
 
 == .gradle.kts
 
-```kotlin-
+```kotlin
 implementation("dev.nextftc:core:1.0.0")
 implementation("dev.nextftc:ftc:1.0.0")
 implementation("dev.nextftc:hardware:1.0.0") // If you would like to use the hardware module

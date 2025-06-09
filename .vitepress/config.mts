@@ -3,6 +3,7 @@ import {tabsMarkdownPlugin} from "vitepress-plugin-tabs";
 import guide from "./sidebar/guide.mts";
 import nextftc from "./sidebar/nextftc.mts";
 import bindings from "./sidebar/bindings.mts";
+import control from "./sidebar/control.mts";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -23,7 +24,6 @@ export default defineConfig({
     ],
     cleanUrls: true,
     ignoreDeadLinks: true,
-    base: "/NextFTC-Docs-v1/",
     markdown: {
         config(md) {
             md.use(tabsMarkdownPlugin);
@@ -63,7 +63,8 @@ export default defineConfig({
         sidebar: {
             '/guide/': guide,
             '/nextftc/': nextftc,
-            '/bindings/': bindings
+            '/bindings/': bindings,
+            '/control/': control
         },
 
         socialLinks:

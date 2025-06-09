@@ -4,10 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d0a43491-3fdc-480b-8421-4c588701afd1" name="Changes" comment="revert: Replace setRequirements with setSubsystems">
+    <list default="true" id="d0a43491-3fdc-480b-8421-4c588701afd1" name="Changes" comment="add: basic nextcontrol info + sidebar">
+      <change afterPath="$PROJECT_DIR$/src/control/dashboard.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/control/getting-started.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/control/usage/feedback-elements.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/control/usage/feedforward-elements.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/guide/subsystems/claw.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/guide/subsystems/claw.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/guide/subsystems/lift.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/guide/subsystems/lift.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vitepress/sidebar/control.mts" beforeDir="false" afterPath="$PROJECT_DIR$/.vitepress/sidebar/control.mts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/control/controlsystem.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/control/usage/control-systems.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/control/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/control/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/control/kineticstates.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/control/usage/kinetic-states.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,12 +30,18 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Zach Harel &lt;zach.harel42@gmail.com&gt;" />
+      </list>
+    </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SIGN_OFF_COMMIT" value="true" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -38,7 +51,7 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/NextFTC/NextFTC-Docs.git&quot;,
+    &quot;url&quot;: &quot;https://github.com/BeepBot99/NextFTC-Docs.git&quot;,
     &quot;accountId&quot;: &quot;3ad9a11f-0710-4d75-940f-e34cc0a3111d&quot;
   }
 }</component>
@@ -58,7 +71,7 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;v1&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/rowan/Documents/Programming/Libraries/NextFTC-Docs/public&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
@@ -68,7 +81,7 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.docs:dev.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.Markdown&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\davis\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
@@ -83,11 +96,11 @@
       <recent name="$PROJECT_DIR$/public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\davis\NextFTCProjects\NextFTC-Docs\src\control\usage" />
       <recent name="C:\Users\davis\WebstormProjects\NextFTC-Docs\src\nextftc\hardware\motors-and-servos" />
       <recent name="C:\Users\davis\WebstormProjects\NextFTC-Docs\src\nextftc\hardware" />
       <recent name="C:\Users\davis\WebstormProjects\NextFTC-Docs\src\nextftc\helpful-commands" />
       <recent name="C:\Users\davis\WebstormProjects\NextFTC-Docs\src\guide" />
-      <recent name="C:\Users\davis\WebstormProjects\NextFTC-Docs\src" />
     </key>
   </component>
   <component name="RunManager">
@@ -146,6 +159,14 @@
       <workItem from="1748730882937" duration="36000" />
       <workItem from="1749079625231" duration="8059000" />
       <workItem from="1749092233151" duration="1941000" />
+      <workItem from="1749410607092" duration="1498000" />
+      <workItem from="1749413845181" duration="7426000" />
+      <workItem from="1749421412230" duration="206000" />
+      <workItem from="1749421628542" duration="699000" />
+      <workItem from="1749422337663" duration="277000" />
+      <workItem from="1749422779347" duration="1533000" />
+      <workItem from="1749501951564" duration="2931000" />
+      <workItem from="1749508463549" duration="1659000" />
     </task>
     <task id="LOCAL-00001" summary="docs: Add NextControl and NextBindings to installation page&#10;&#10;- Version 1.0.0 of each">
       <option name="closed" value="true" />
@@ -267,7 +288,23 @@
       <option name="project" value="LOCAL" />
       <updated>1749094188732</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="fix: nextftc installation codeblock used language kotlin- instead of kotlin">
+      <option name="closed" value="true" />
+      <created>1749413915584</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1749413915584</updated>
+    </task>
+    <task id="LOCAL-00017" summary="add: basic nextcontrol info + sidebar">
+      <option name="closed" value="true" />
+      <created>1749422791098</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1749422791098</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -300,6 +337,8 @@
     <MESSAGE value="refactor: Remove Dokka files" />
     <MESSAGE value="feat: NextBindings docs and some other stuff" />
     <MESSAGE value="revert: Replace setRequirements with setSubsystems" />
-    <option name="LAST_COMMIT_MESSAGE" value="revert: Replace setRequirements with setSubsystems" />
+    <MESSAGE value="fix: nextftc installation codeblock used language kotlin- instead of kotlin" />
+    <MESSAGE value="add: basic nextcontrol info + sidebar" />
+    <option name="LAST_COMMIT_MESSAGE" value="add: basic nextcontrol info + sidebar" />
   </component>
 </project>
