@@ -32,7 +32,7 @@ export default defineConfig({
         }
     },
     title: "NextFTC Documentation",
-    description: "Simple but powerful library for FTC",
+    description: "Simple but powerful libraries for FTC",
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
         nav: [
