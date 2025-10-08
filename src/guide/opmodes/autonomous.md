@@ -76,7 +76,7 @@ and will initialize them accordingly.
 ### A Quick Note on Components
 
 Components are NextFTC's approach to making OpModes more modular and
-customizable. Each component has 10 functions that get run before and after each
+customizable. Each component has 5 functions that get run before and after each
 OpMode function (`onInit`, `onWaitForStart`,`onStartButtonPressed`, `onUpdate`,
 and`onStop`). This means that components are extremely versatile and can be used
 to achieve a wide range of functions when they're used in your OpModes.
