@@ -79,7 +79,7 @@ driverControlled = MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    Gamepads.gamepad1.leftStickY,
+    -Gamepads.gamepad1.leftStickY,
     Gamepads.gamepad1.leftStickX,
     Gamepads.gamepad1.rightStickX
 )
@@ -94,7 +94,7 @@ driverControlled = new MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    Gamepads.gamepad1().leftStickY(),
+    Gamepads.gamepad1().leftStickY().negate(),
     Gamepads.gamepad1().leftStickX(),
     Gamepads.gamepad1().rightStickX()
 );
@@ -114,7 +114,7 @@ driverControlled = MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    Gamepads.gamepad1.leftStickY,
+    -Gamepads.gamepad1.leftStickY,
     Gamepads.gamepad1.leftStickX,
     Gamepads.gamepad1.rightStickX,
     HolonomicMode.FieldCentric(imu)
@@ -130,7 +130,7 @@ driverControlled = new MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    Gamepads.gamepad1().leftStickY(),
+    Gamepads.gamepad1().leftStickY().negate(),
     Gamepads.gamepad1().leftStickX(),
     Gamepads.gamepad1().rightStickX(),
     new HolonomicMode.FieldCentric(imu)
