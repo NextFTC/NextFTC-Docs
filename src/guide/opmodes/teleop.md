@@ -102,14 +102,13 @@ private val frontRightMotor = MotorEx("front_right")
 private val backLeftMotor = MotorEx("back_left").reversed()
 private val backRightMotor = MotorEx("back_right")
 
-// negate leftStickY to make pressing up move forward
 override fun onStartButtonPressed() {
     val driverControlled = MecanumDriverControlled(
         frontLeftMotor,
         frontRightMotor,
         backLeftMotor,
         backRightMotor,
-        Gamepads.gamepad1.leftStickY.negate,
+        -Gamepads.gamepad1.leftStickY,
         Gamepads.gamepad1.leftStickX,
         Gamepads.gamepad1.rightStickX
     )
@@ -126,7 +125,6 @@ private final MotorEx frontRightMotor = new MotorEx("front_right");
 private final MotorEx backLeftMotor = new MotorEx("back_left").reversed();
 private final MotorEx backRightMotor = new MotorEx("back_right");
 
-// negate leftStickY to make pressing up move forward
 @Override
 public void onStartButtonPressed() {
     Command driverControlled = new MecanumDriverControlled(
@@ -302,14 +300,13 @@ class TeleOpProgram : NextFTCOpMode() {
     private val backLeftMotor = MotorEx("back_left").reversed()
     private val backRightMotor = MotorEx("back_right")
 
-    // negate leftStickY to make pressing up move forward
     override fun onStartButtonPressed() {
         val driverControlled = MecanumDriverControlled(
             frontLeftMotor,
             frontRightMotor,
             backLeftMotor,
             backRightMotor,
-            Gamepads.gamepad1.leftStickY.negate,
+            -Gamepads.gamepad1.leftStickY,
             Gamepads.gamepad1.leftStickX,
             Gamepads.gamepad1.rightStickX
         )
@@ -346,7 +343,6 @@ public class TeleOpProgram extends NextFTCOpMode {
     private final MotorEx backLeftMotor = new MotorEx("back_left").reversed();
     private final MotorEx backRightMotor = new MotorEx("back_right");
 
-    // negate leftStickY to make pressing up move forward
     @Override
     public void onStartButtonPressed() {
         Command driverControlled = new MecanumDriverControlled(
