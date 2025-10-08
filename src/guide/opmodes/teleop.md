@@ -108,7 +108,7 @@ override fun onStartButtonPressed() {
         frontRightMotor,
         backLeftMotor,
         backRightMotor,
-        Gamepads.gamepad1.leftStickY,
+        -Gamepads.gamepad1.leftStickY,
         Gamepads.gamepad1.leftStickX,
         Gamepads.gamepad1.rightStickX
     )
@@ -132,7 +132,7 @@ public void onStartButtonPressed() {
         frontRightMotor,
         backLeftMotor,
         backRightMotor,
-        Gamepads.gamepad1().leftStickY(),
+        Gamepads.gamepad1().leftStickY().negate(),
         Gamepads.gamepad1().leftStickX(),
         Gamepads.gamepad1().rightStickX()
     );
