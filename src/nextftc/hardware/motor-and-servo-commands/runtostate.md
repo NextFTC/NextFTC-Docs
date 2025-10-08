@@ -137,17 +137,17 @@ POSITIVE_INFINITY`. The velocity tolerance defaults to 5.
 == Kotlin
 
 ```kotlin
-RunToPosition(controlSystem, velTarget)
-RunToPosition(controlSystem, velTarget, velTolerance)
-RunToPosition(controlSystem, velTarget, fullTolerance)
+RunToVelocity(controlSystem, velTarget)
+RunToVelocity(controlSystem, velTarget, velTolerance)
+RunToVelocity(controlSystem, velTarget, fullTolerance)
 ```
 
 == Java
 
 ```java
-new RunToPosition(controlSystem, velTarget)
-new RunToPosition(controlSystem, velTarget, velTolerance)
-new RunToPosition(controlSystem, veltarget, fullTolerance)
+new RunToVelocity(controlSystem, velTarget)
+new RunToVelocity(controlSystem, velTarget, velTolerance)
+new RunToVelocity(controlSystem, veltarget, fullTolerance)
 ```
 
 :::
