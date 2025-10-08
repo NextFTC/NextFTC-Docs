@@ -112,10 +112,10 @@ backRightMotor = new MotorEx(backRightName);
 frontRightMotor = new MotorEx(frontRightName);
 
 // Change your motor directions to suit your robot.
-frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+frontLeftMotor.reversed();
+backLeftMotor.reversed();
+frontRightMotor;
+backRightMotor;
 
 // Skip this if you are only using two motors.
 leftMotors = new MotorGroup(frontLeftMotor, backLeftMotor);
@@ -135,14 +135,14 @@ You can run it as a tank drive:
 == Kotlin
 
 ```kotlin
-driverControlled = DifferentialTankDriverControlled(leftMotors, rightMotors, gamepadManager.gamepad1)
+driverControlled = DifferentialTankDriverControlled(leftMotors, rightMotors, -Gamepads.gamepad1.leftStickY, -Gamepads.gamepad1.rightStickY)
 driverControlled()
 ```
 
 == Java
 
 ```java
-driverControlled = new MecanumDriverControlled(leftMotors, rightMotors, gamepadManager.gamepad1);
+driverControlled = new DifferentialTankDriverControlled(leftMotors, rightMotors, Gamepads.gamepad1().leftStickY.negate(), Gamepads.gamepad1().rightStickY.negate());
 driverControlled.schedule();
 ```
 
@@ -154,14 +154,14 @@ Or as an arcade drive:
 == Kotlin
 
 ```kotlin
-driverControlled = DifferentialArcadeDriverControlled(leftMotors, rightMotors, gamepadManager.gamepad1, false, imu)
+driverControlled = DifferentialArcadeDriverControlled(leftMotors, rightMotors, -Gamepads.gamepad1.leftStickY, Gamepads.gamepad1.rightStickX)
 driverControlled()
 ```
 
 == Java
 
 ```java
-driverControlled = new DifferentialArcadeDriverControlled(leftMotors, rightMotors, gamepadManager.gamepad1, false, imu);
+driverControlled = new DifferentialArcadeDriverControlled(leftMotors, rightMotors, Gamepads.gamepad1().leftStickY().negate(), Gamepads.gamepad1().rightStickX());
 driverControlled.schedule();
 ```
 
