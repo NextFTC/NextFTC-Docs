@@ -145,9 +145,9 @@ RunToPosition(controlSystem, velTarget, fullTolerance)
 == Java
 
 ```java
-new RunToPosition(controlSystem, velTarget)
-new RunToPosition(controlSystem, velTarget, velTolerance)
-new RunToPosition(controlSystem, veltarget, fullTolerance)
+new RuntToVelocity(controlSystem, velTarget)
+new RuntToVelocity(controlSystem, velTarget, velTolerance)
+new RuntToVelocity(controlSystem, veltarget, fullTolerance)
 ```
 
 :::
