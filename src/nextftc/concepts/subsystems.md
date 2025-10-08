@@ -115,4 +115,4 @@ It can also be used to simplify the process of adding multiple
 subsystems to a `SubsystemComponent`.
 
 For examples of SubsystemGroups,
-see the [corresponding guide page](../../guide/subsystems/groups-and-robot).
+see the [corresponding guide page](subsystem-groups.md).

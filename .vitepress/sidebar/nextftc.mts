@@ -27,6 +27,10 @@ export default [
             {
                 text: "Units",
                 link: "/nextftc/concepts/units"
+            },
+            {
+                text: "Subsystem Groups",
+                link: "/nextftc/concepts/subsystem-groups"
             }
         ]
     },
@@ -36,19 +40,23 @@ export default [
         items: [
             {
                 text: "Command Groups",
-                link: "/nextftc/helpful-commands/groups"
+                link: "/nextftc/commands/groups"
             },
             {
                 text: "Utilities",
-                link: "/nextftc/helpful-commands/utilities"
+                link: "/nextftc/commands/utilities"
             },
             {
                 text: "Conditionals",
-                link: "/nextftc/helpful-commands/conditionals"
+                link: "/nextftc/commands/conditionals"
             },
             {
                 text: "Delays",
-                link: "/nextftc/helpful-commands/delays"
+                link: "/nextftc/commands/delays"
+            },
+            {
+                text: "Custom Commands",
+                link: "/nextftc/commands/custom-commands"
             }
         ]
     },
