@@ -21,12 +21,6 @@
 > by
 > an angle measurement equivalent to the global heading of the robot.
 
-> In both robot-centric and field-centric modes we negate `leftStickY`. This is
-> a common FTC convention because gamepads report a negative Y when the stick is
-> pushed forward and a positive Y when it’s pulled back. Use the `.negate`
-> helper (for example `Gamepads.gamepad1.leftStickY.negate`) to apply this
-> adjustment.
-
 ## Usage
 
 First, we need to create the motors. Let's create variables for them:
@@ -143,6 +137,13 @@ driverControlled = new MecanumDriverControlled(
 );
 driverControlled.schedule();
 ```
+
+> [!NOTE]
+> In both robot-centric and field-centric modes we negate `leftStickY`. This is
+> a common FTC convention because gamepads report a negative Y when the stick is
+> pushed forward and a positive Y when it’s pulled back. Use the `.negate()`
+> helper (for example `Gamepads.gamepad1.leftStickY.negate()`) to apply this
+> adjustment.
 
 :::
 
