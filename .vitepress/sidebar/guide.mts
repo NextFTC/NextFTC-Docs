@@ -15,7 +15,6 @@ export default [
             {text: "Overview", link: "/guide/subsystems/overview"},
             {text: "Lift", link: "/guide/subsystems/lift"},
             {text: "Claw", link: "/guide/subsystems/claw"},
-            {text: "Groups and Robots", link: "/guide/subsystems/groups-and-robot"},
         ]
     },
     {
