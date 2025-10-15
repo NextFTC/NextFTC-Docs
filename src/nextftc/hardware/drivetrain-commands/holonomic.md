@@ -79,7 +79,7 @@ driverControlled = MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    Gamepads.gamepad1.leftStickY,
+    -Gamepads.gamepad1.leftStickY,
     Gamepads.gamepad1.leftStickX,
     Gamepads.gamepad1.rightStickX
 )
@@ -94,7 +94,7 @@ driverControlled = new MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    Gamepads.gamepad1().leftStickY(),
+    Gamepads.gamepad1().leftStickY().negate(),
     Gamepads.gamepad1().leftStickX(),
     Gamepads.gamepad1().rightStickX()
 );
@@ -114,7 +114,7 @@ driverControlled = MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    Gamepads.gamepad1.leftStickY,
+    -Gamepads.gamepad1.leftStickY,
     Gamepads.gamepad1.leftStickX,
     Gamepads.gamepad1.rightStickX,
     HolonomicMode.FieldCentric(imu)
@@ -130,13 +130,20 @@ driverControlled = new MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    Gamepads.gamepad1().leftStickY(),
+    Gamepads.gamepad1().leftStickY().negate(),
     Gamepads.gamepad1().leftStickX(),
     Gamepads.gamepad1().rightStickX(),
     new HolonomicMode.FieldCentric(imu)
 );
 driverControlled.schedule();
 ```
+
+> [!NOTE]
+> In both robot-centric and field-centric modes we negate `leftStickY`. This is
+> a common FTC convention because gamepads report a negative Y when the stick is
+> pushed forward and a positive Y when it’s pulled back. Use the `.negate()`
+> helper (for example `Gamepads.gamepad1.leftStickY.negate()`) to apply this
+> adjustment.
 
 :::
 
