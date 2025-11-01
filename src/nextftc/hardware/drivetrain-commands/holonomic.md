@@ -29,20 +29,20 @@ First, we need to create the motors. Let's create variables for them:
 == Kotlin
 
 ```kotlin
-private val frontLeftMotor = MotorEx("front_left").breakMode().reversed()
-private val frontRightMotor = MotorEx("front_right").breakMode()
-private val backLeftMotor = MotorEx("back_left").breakMode().reversed()
-private val backRightMotor = MotorEx("back_right").breakMode()
+private val frontLeftMotor = MotorEx("front_left").brakeMode().reversed()
+private val frontRightMotor = MotorEx("front_right").brakeMode()
+private val backLeftMotor = MotorEx("back_left").brakeMode().reversed()
+private val backRightMotor = MotorEx("back_right").brakeMode()
 ```
 
 == Java
 
 ```java
-private MotorEx frontLeftMotor = new MotorEx("front_left").breakMode().
+private MotorEx frontLeftMotor = new MotorEx("front_left").brakeMode().
 reversed();
-private MotorEx frontRightMotor = new MotorEx("front_right").breakMode();
-private MotorEx backLeftMotor = new MotorEx("back_left").breakMode().reversed();
-private MotorEx backRightMotor = new MotorEx("back_right").breakMode();
+private MotorEx frontRightMotor = new MotorEx("front_right").brakeMode();
+private MotorEx backLeftMotor = new MotorEx("back_left").brakeMode().reversed();
+private MotorEx backRightMotor = new MotorEx("back_right").brakeMode();
 ```
 
 :::
@@ -79,7 +79,7 @@ driverControlled = MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    -Gamepads.gamepad1.leftStickY,
+    Gamepads.gamepad1.leftStickY,
     Gamepads.gamepad1.leftStickX,
     Gamepads.gamepad1.rightStickX
 )
@@ -94,7 +94,7 @@ driverControlled = new MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    Gamepads.gamepad1().leftStickY().negate(),
+    Gamepads.gamepad1().leftStickY(),
     Gamepads.gamepad1().leftStickX(),
     Gamepads.gamepad1().rightStickX()
 );
@@ -114,10 +114,10 @@ driverControlled = MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    -Gamepads.gamepad1.leftStickY,
+    Gamepads.gamepad1.leftStickY,
     Gamepads.gamepad1.leftStickX,
     Gamepads.gamepad1.rightStickX,
-    HolonomicMode.FieldCentric(imu)
+    FieldCentric(imu)
 )
 driverControlled()
 ```
@@ -130,20 +130,13 @@ driverControlled = new MecanumDriverControlled(
     frontRightMotor,
     backLeftMotor,
     backRightMotor,
-    Gamepads.gamepad1().leftStickY().negate(),
+    Gamepads.gamepad1().leftStickY(),
     Gamepads.gamepad1().leftStickX(),
     Gamepads.gamepad1().rightStickX(),
-    new HolonomicMode.FieldCentric(imu)
+    new FieldCentric(imu)
 );
 driverControlled.schedule();
 ```
-
-> [!NOTE]
-> In both robot-centric and field-centric modes we negate `leftStickY`. This is
-> a common FTC convention because gamepads report a negative Y when the stick is
-> pushed forward and a positive Y when it’s pulled back. Use the `.negate()`
-> helper (for example `Gamepads.gamepad1.leftStickY.negate()`) to apply this
-> adjustment.
 
 :::
 
