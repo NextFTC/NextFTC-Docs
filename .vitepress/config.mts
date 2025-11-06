@@ -77,7 +77,7 @@ export default defineConfig({
             ],
         editLink:
             {
-                pattern: "https://github.com/NextFTC/NextFTC-Docs-v1/edit/main/src/:path" // TODO: Update to `NextFTC-Docs` when v1 is released
+                pattern: "https://github.com/NextFTC/NextFTC-Docs/edit/main/src/:path" // TODO: Update to `NextFTC-Docs` when v1 is released
             }
         ,
         search: {

@@ -22,15 +22,15 @@ Add the following lines:
 == .gradle
 
 ```groovy
-implementation 'dev.nextftc:ftc:1.0.0'
-implementation 'dev.nextftc:hardware:1.0.0' // If you would like to use the hardware module
+implementation 'dev.nextftc:ftc:1.0.1'
+implementation 'dev.nextftc:hardware:1.0.1' // If you would like to use the hardware module
 ```
 
 == .gradle.kts
 
 ```kotlin
-implementation("dev.nextftc:ftc:1.0.0")
-implementation("dev.nextftc:hardware:1.0.0") // If you would like to use the hardware module
+implementation("dev.nextftc:ftc:1.0.1")
+implementation("dev.nextftc:hardware:1.0.1") // If you would like to use the hardware module
 ```
 
 :::
