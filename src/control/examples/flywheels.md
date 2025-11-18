@@ -30,7 +30,8 @@ ControlSystem.builder()
 If you're using a command-based framework like NextFTC,
 you can create commands that spin the flywheel up or shut it down.
 
-An example Flywheel subsystem implemented with NextControl looks like:
+An example of a Flywheel subsystem using NextControl can be found 
+[here](../../guide/subsystems/flywheel.md).
 
 ::: tabs key:code 
 
