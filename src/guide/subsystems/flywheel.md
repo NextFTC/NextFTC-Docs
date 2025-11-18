@@ -1,4 +1,4 @@
-# Lift Subsystem
+# Flywheel Subsystem
 
 A subsystem that is found in almost all FTC robots in most seasons is a flywheel,
 here will learn how to program your own flywheel subsystem.
@@ -51,13 +51,13 @@ of type `MotorEx`.
 == Kotlin
 
 ```kotlin
-private val motor = MotorEx("lift_motor")
+private val motor = MotorEx("flywheel_motor")
 ```
 
 == Java
 
 ```java
-private MotorEx motor = new MotorEx("lift_motor");
+private MotorEx motor = new MotorEx("flywheel_motor");
 ```
 
 :::
@@ -131,11 +131,9 @@ We're not quite done, though. We still need to create our commands!
 
 The last step when you create a Subsystem is to create the commands you'll be
 using. This process varies with each
-subsystem. Here, we'll create three commands that each move
-the lift to a different height: `toLow`,
-`toMiddle`, and `toHigh`.
+subsystem. Here, we'll create two commands.
 
-To control our motor's position, we will be using the `RunToPosition` command.
+To control our motor's position, we will be using the `RunToVelocity` command.
 
 Let's create our first `RunToVelocity` command.
 
@@ -157,7 +155,7 @@ public final Command on = new RunToVelocity(controller, 500.0)
 :::
 
 Pretty easy, right? Let's duplicate it and update our variable name and target
-position to create our other two commands:
+velocity to create our off command:
 
 :::tabs key:code
 == Kotlin
