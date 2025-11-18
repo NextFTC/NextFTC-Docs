@@ -117,7 +117,7 @@ driverControlled = MecanumDriverControlled(
     -Gamepads.gamepad1.leftStickY,
     Gamepads.gamepad1.leftStickX,
     Gamepads.gamepad1.rightStickX,
-    HolonomicMode.FieldCentric(imu)
+    new FieldCentric(imu)
 )
 driverControlled()
 ```
