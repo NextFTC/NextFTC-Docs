@@ -133,7 +133,7 @@ The last step when you create a Subsystem is to create the commands you'll be
 using. This process varies with each
 subsystem. Here, we'll create two commands.
 
-To control our motor's position, we will be using the `RunToVelocity` command.
+To control our motor's velocity , we will be using the `RunToVelocity` command.
 
 Let's create our first `RunToVelocity` command.
 
