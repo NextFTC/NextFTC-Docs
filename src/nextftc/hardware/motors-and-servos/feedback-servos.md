@@ -1,6 +1,6 @@
 # Feedback Servos
 
-Feedback servos can be one of two types: ```FeedbackCRServoEx``` or ```FeedbackServoEx```. 
+Feedback servos can be one of two types: `FeedbackCRServoEx` or `FeedbackServoEx`. These wrap respectively a `CRServoEx` and a `ServoEx`. They allow you to read the position of the servo from the 4th analog pin. 
 
 ## FeedbackServoEx
 
@@ -8,7 +8,10 @@ Feedback servos can be one of two types: ```FeedbackCRServoEx``` or ```FeedbackS
 
 == Kotlin 
 
-```Kotlin
+```kotlin
+val servo: FeedbackServoEx = FeedbackServoEx("analog-name", "servo-name", 0.01)
+
+// Alternatively
 val servo: FeedbackServoEx = FeedbackServoEx {
     cacheTolerance = 0.01, // Or whatever you'd like to use
     feedbackFactory = { ActiveOpMode.hardwareMap.analogInput.get("analog-name") },
@@ -16,71 +19,85 @@ val servo: FeedbackServoEx = FeedbackServoEx {
 }
 
 // Alternatively
-val servo: FeedbackServoEx = FeedbackServoEx("analog-name", "servo-name", 0.01)
-
-// Alternatively
 val analogInput: AnalogInput = ActiveOpMode.hardwareMap.analogInput.get("analog-name")
 val servoFactory: Servo = ActiveOpMode.hardwareMap.servo.get("servo-name")
 val servo: FeedbackServoEx = FeedbackServoEx(analogInput, servoFactory, 0.01) // Using cache tolerance = 0.01
 ```
 == Java
-```Java
-FeedbackServoEx servo = new FeedbackServoEx(
-    0.01, // Or your preferred cache tolerance
-    () -> { ActiveOpMode.hardwareMap.analogInput.get("analog-name") }, 
-    () -> { ActiveOpMode.hardwareMap.servo.get("servo-name") }
-);
-
-// Alternatively
+```java
 FeedbackServoEx servo = new FeedbackServoEx("analog-name", "servo-name", 0.01);
 
 // Alternatively
-AnalogInput analogInput = ActiveOpMode.hardwareMap.analogInput.get("analog-name");
-Servo servoFactory = ActiveOpMode.hardwareMap.servo.get("servo-name");
+FeedbackServoEx servo = new FeedbackServoEx(
+    0.01, // Or your preferred cache tolerance
+    () -> { ActiveOpMode.hardwareMap().analogInput.get("analog-name") }, 
+    () -> { ActiveOpMode.hardwareMap().servo.get("servo-name") }
+);
+
+// Alternatively
+AnalogInput analogInput = ActiveOpMode.hardwareMap().analogInput.get("analog-name");
+Servo servoFactory = ActiveOpMode.hardwareMap().servo.get("servo-name");
 FeedbackServoEx servo = new FeedbackServoEx(analogInput, servoFactory, 0.01);
 ```
 ==
 :::
 
-The caching tolerance is the same for any normal ```ServoEx``` or other implementation.
+The caching tolerance is the same for any normal `ServoEx` or other implementation.
 
 
 ## FeedbackCRServoEx
 
-:::tabs key:code
+:::tabs key:code 
 
-== Kotlin
-```Kotlin
+== Kotlin 
+
+```kotlin
+val servo: FeedbackCRServoEx = FeedbackCRServoEx("analog-name", "servo-name", 0.01)
+
+// Alternatively
 val servo: FeedbackCRServoEx = FeedbackCRServoEx {
     cacheTolerance = 0.01, // Or whatever you'd like to use
     feedbackFactory = { ActiveOpMode.hardwareMap.analogInput.get("analog-name") },
-    servoFactory = { ActiveOpMode.hardwareMap.servo.get("servo-name") }
+    servoFactory = { ActiveOpMode.hardwareMap.crservo.get("servo-name") }
 }
+
+// Alternatively
+val analogInput: AnalogInput = ActiveOpMode.hardwareMap.analogInput.get("analog-name")
+val servoFactory: CRServo = ActiveOpMode.hardwareMap.crservo.get("servo-name")
+val servo: FeedbackCRServoEx = FeedbackCRServoEx(analogInput, servoFactory, 0.01) // Using cache tolerance = 0.01
 ```
 == Java
-```Java
-FeedbackServoEx servo = new FeedbackServoEx(
+```java
+FeedbackCRServoEx servo = new FeedbackCRServoEx("analog-name", "servo-name", 0.01);
+
+// Alternatively
+FeedbackCRServoEx servo = new FeedbackCRServoEx(
     0.01, // Or your preferred cache tolerance
-    () -> { ActiveOpMode.hardwareMap.analogInput.get("analog-name") }, 
-    () -> { ActiveOpMode.hardwareMap.servo.get("servo-name") }
+    () -> { ActiveOpMode.hardwareMap().analogInput.get("analog-name") }, 
+    () -> { ActiveOpMode.hardwareMap().crservo.get("servo-name") }
 );
+
+// Alternatively
+AnalogInput analogInput = ActiveOpMode.hardwareMap.analogInput.get("analog-name");
+CRServo servoFactory = ActiveOpMode.hardwareMap.crservo.get("servo-name");
+FeedbackCRServoEx servo = new FeedbackCRServoEx(analogInput, servoFactory, 0.01);
 ```
 ==
 :::
 
-Note that this is a little different than the ```FeedbackCRServoEx```. There are not currently any overloaded constructors as opposed to the other class. This will probably be updated soon. But in the meantime, you have to do it this way. 
+Same deal as `FeedbackServoEx` with caching.
 
 ## Features 
 
-Both ```FeedbackCRServoEx``` and ```FeedbackServoEx``` share the same method internally of ```getCurrentPosition()```. This returns the current position of the servo in radians from 0 to 2 pi.
+Both `FeedbackCRServoEx` and `FeedbackServoEx` share the same method internally of `getCurrentPosition()` or `currentPosition` in Kotlin. This returns the current position of the servo in radians from 0 to 2 pi.
 
-## Example Usage
+## Example Tracking 
 
 :::tabs key:code
 
-== Kotlin
+== Java
 
-```Kotlin
+```java
 double currentAngle = servo.getCurrentPosition();
 deltaHeading = currentAngle - previousAngle;
 
@@ -93,4 +110,4 @@ previousAngle = currentAngle;
 
 :::
 
-This code would result in the tracked position of the servo (beyond 0 to 2 pi). This is incredibly useful for ```FeedbackCRServoEx```. 
+This code would result in the tracked position of the servo (beyond 0 to 2 pi). This is incredibly useful for `FeedbackCRServoEx`. However be warned that the analog wrap may cause issues, but this is merely an example.

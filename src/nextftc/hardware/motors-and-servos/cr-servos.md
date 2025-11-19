@@ -2,62 +2,80 @@
 
 Continuous rotation servos are servos that instead of moving to a position use power to move. They are more comparable to motors in that sense than a traditional servo.
 
-```CRServoEx``` wraps a ```CRServo``` exactly like a ```ServoEx``` wraps a ```Servo``` but implements ```Powerable``` instead of ```Positionable```. 
+`CRServoEx` wraps a `CRServo` exactly like a `ServoEx` wraps a `Servo` but implements `Powerable` instead of `Positionable`. 
 
 ## Declarations
 
-You can declare ```CRServoEx``` in the following manner, much like a normal ```ServoEx```:
+You can declare `CRServoEx` in the following manner, much like a normal `ServoEx`:
 
 :::tabs key:code
 
 == Kotlin
 
-```Kotlin
-val crservo: CRServoEx = CRServoEx { CRServo }
-
-// Alternatively
-val crservo: CRServoEx = CRServoEx(CRServo)
+```kotlin
+val crServoEx: CRServoEx = CRServoEx("cr_servo_name")
 
 // Alternatively 
-val crservo: CRServoEx = CRServoEx("cr_servo_name")
+val crServoEx: CRServoEx = CRServoEx { crServo }
+
+// Alternatively
+val crServoEx: CRServoEx = CRServoEx(crServo)
 
 ```
 
 == Java
-```Java
-CRServoEx crservo = new CRServoEx(() -> CRServo);
+```java
+CRServoEx crServoEx = new CRServoEx("cr_servo_name");
 
 // Alternatively
-CRServoEx crservo = new CRServoEx(CRServo);
+CRServoEx crServoEx = new CRServoEx(() -> crServo);
 
 // Alternatively
-CRServoEx crservo = new ServoEx("servo_name");
+CRServoEx crServoEx = new CRServoEx(crServo);
+
 ```
 
 ::: 
 
+Additionally you can pass a cache tolerance (default is 0.01), exactly like a normal servo. 
+
+:::tabs key:code
+
+== Kotlin
+```kotlin
+var crServoEx = CRServoEx("cr_servo_name", cacheTolerance)
+var crServoEx = CRServoEx(cacheTolerance) { crServo }
+var crServoEx = CRServoEx(crServo, cacheTolerance)
+```
+== Java
+```java
+CRServoEx crServoEx = new CRServoEx("cr_servo_name", cacheTolerance);
+CRServoEx crServoEx = new CRServoEx(cacheTolerance, () -> crServo);
+CRServoEx crServoEx = new CRServoEx(crServo, cacheTolerance);
+```
+:::
+
 ## Usage
 
-```CRServoEx``` has only a ```power``` variable to set or get the power of the motor. Like a ```MotorEx``` the power can vary from -1 to 1. 
+`CRServoEx` has only a `power` property to set or get the power of the motor. Like a `MotorEx` the power can vary from -1 to 1. 
 
 :::tabs key:code
 
 == Kotlin
 
-```Kotlin
-crservo.power = 0.0 // To turn off
-crservo.power = -1.0 // To spin in reverse
-crservo.power = 1.0 // To spin forward
+```kotlin
+crServoEx.power = 0.0 // To turn off
+crServoEx.power = -1.0 // To spin in reverse fully
+crServoEx.power = 0.5 // To spin forward partially
 ```
 
 == Java
 
-```Java
-crservo.setPower(0.0); // To turn off
-crservo.setPower(-1.0); // To spin in reverse
-crservo.setPower(1.0); // To spin forward
+```java
+crServoEx.setPower(0.0); // To turn off
+crServoEx.setPower(-1.0); // To spin in reverse fully
+crServoEx.setPower(0.5); // To spin forward partially
 ```
 
-:::tabs
+:::
 
-Additionally you can pass a cache tolerance (default is 0.01)
