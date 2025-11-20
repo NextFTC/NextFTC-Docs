@@ -29,10 +29,10 @@ First, we need to create the motors. Let's create variables for them:
 == Kotlin
 
 ```kotlin
-private val frontLeftMotor = MotorEx("front_left").breakMode().reversed()
-private val frontRightMotor = MotorEx("front_right").breakMode()
-private val backLeftMotor = MotorEx("back_left").breakMode().reversed()
-private val backRightMotor = MotorEx("back_right").breakMode()
+private val frontLeftMotor = MotorEx("front_left").brakeMode().reversed()
+private val frontRightMotor = MotorEx("front_right").brakeMode()
+private val backLeftMotor = MotorEx("back_left").brakeMode().reversed()
+private val backRightMotor = MotorEx("back_right").brakeMode()
 ```
 
 == Java
