@@ -117,7 +117,7 @@ driverControlled = MecanumDriverControlled(
     -Gamepads.gamepad1.leftStickY,
     Gamepads.gamepad1.leftStickX,
     Gamepads.gamepad1.rightStickX,
-    HolonomicMode.FieldCentric(imu)
+    FieldCentric(imu)
 )
 driverControlled()
 ```
@@ -133,7 +133,7 @@ driverControlled = new MecanumDriverControlled(
     Gamepads.gamepad1().leftStickY().negate(),
     Gamepads.gamepad1().leftStickX(),
     Gamepads.gamepad1().rightStickX(),
-    new HolonomicMode.FieldCentric(imu)
+    new FieldCentric(imu)
 );
 driverControlled.schedule();
 ```

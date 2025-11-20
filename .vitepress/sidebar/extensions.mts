@@ -21,5 +21,12 @@ export default [
             {text: "Trajectory Command Builder", link: "/extensions/roadrunner/command-builder"},
             {text: "Using With Other Commands", link: "/extensions/roadrunner/other-commands"}
         ]
+    },
+    {
+        text: "FateWeaver", items: [
+            {text: "Installation", link: "/extensions/fateweaver/"},
+            {text: "FateComponent", link: "/extensions/fateweaver/fatecomponent"},
+            {text: "Publishers", link: "/extensions/fateweaver/publishers"},
+        ]
     }
 ] satisfies SidebarItem[]

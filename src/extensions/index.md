@@ -12,4 +12,10 @@ More information about the extension can be found [here](pedro/index).
 
 This extension provides integration with the
 [RoadRunner Library](https://rr.brott.dev/).
-Docs are coming soon!
+More information about the extension can be found [here](roadrunner/index).
+
+## FateWeaver
+
+This extension provides integration with the
+[FateWeaver Library](https://fate.zharel.gay/).
+More information about the extension can be found [here](fateweaver/index).
