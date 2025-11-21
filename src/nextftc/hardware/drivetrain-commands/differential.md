@@ -142,7 +142,7 @@ driverControlled()
 == Java
 
 ```java
-driverControlled = new MecanumDriverControlled(leftMotors, rightMotors, gamepadManager.gamepad1);
+driverControlled = new DifferentialTankDriverControlled(leftMotors, rightMotors, gamepadManager.gamepad1);
 driverControlled.schedule();
 ```
 
