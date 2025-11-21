@@ -89,25 +89,47 @@ Same deal as `FeedbackServoEx` with caching.
 
 ## Features 
 
-Both `FeedbackCRServoEx` and `FeedbackServoEx` share the same method internally of `getCurrentPosition()` or `currentPosition` in Kotlin. This returns the current position of the servo in radians from 0 to 2 pi.
+Both `FeedbackCRServoEx` and `FeedbackServoEx` share the same `currentPosition` property This returns the current position of the servo in radians from 0 to 2 pi, and it is an absolute encoder so it will wrap over.
 
 ## Example Tracking 
 
 :::tabs key:code
 
+== Kotlin
+```kotlin
+var totalAngle:Double = 0.0 // This is your angle of the servo
+var previousAngle:Double = 0.0 // This is the previous loop's servo position
+
+fun updatePosition() {
+	val currentAngle = servo.currentPosition
+	var deltaAngle = currentAngle - previousAngle
+
+	if(deltaAngle > Math.PI) deltaAngle -= 2 * Math.PI
+	else if (deltaAngle < -Math.PI) deltaAngle += 2 * Math.PI
+
+	totalAngle += deltaAngle
+	previousAngle = currentAngle 
+}
+```
+
 == Java
 
 ```java
-double currentAngle = servo.getCurrentPosition();
-deltaHeading = currentAngle - previousAngle;
+double totalAngle = 0.0; // This is your angle of the servo
+double previousAngle = 0.0; // This is the previous loop's servo position
 
-if (deltaHeading > Math.PI) deltaHeading -= 2 * Math.PI;
-else if (deltaHeading < -Math.PI) deltaHeading += 2 * Math.PI;
+void updatePosition() {
+	double currentAngle = servo.getCurrentPosition();
+	double deltaAngle = currentAngle - previousAngle;
 
-totalAngle += deltaHeading;
-previousAngle = currentAngle;
-``` 
+	if (deltaAngle > Math.PI) deltaAngle -= 2 * Math.PI;
+	else if (deltaAngle < -Math.PI) deltaAngle += 2 * Math.PI;
 
+	totalAngle += deltaAngle;
+	previousAngle = currentAngle;
+}
+```
+==
 :::
 
 This code would result in the tracked position of the servo (beyond 0 to 2 pi). This is incredibly useful for `FeedbackCRServoEx`. However be warned that the analog wrap may cause issues, but this is merely an example.
