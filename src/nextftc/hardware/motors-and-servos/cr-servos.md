@@ -1,7 +1,5 @@
 # Continuous Rotation Servos
 
-Continuous rotation servos are servos that instead of moving to a position use power to move. They are more comparable to motors in that sense than a traditional servo.
-
 `CRServoEx` wraps a `CRServo` exactly like a `ServoEx` wraps a `Servo` but implements `Powerable` instead of `Positionable`. 
 
 ## Declarations
