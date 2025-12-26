@@ -23,7 +23,7 @@ To create a `SubsystemGroup`,
 you must create a subclass of `SubsystemGroup`,
 and provide the necessary subsystem instances to its constructor.
 
-:::tabs key:code
+::: tabs key:code
 
 == Kotlin
 
@@ -60,7 +60,7 @@ To register a subsystem group, you can simply pass its instance
 to the `SubsystemComponent` constructor in a NextFtcOpMode
 the way you would with a regular subsystem:
 
-:::tabs key:code
+::: tabs key:code
 
 == Kotlin
 
