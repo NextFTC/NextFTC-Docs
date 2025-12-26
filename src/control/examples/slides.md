@@ -88,17 +88,17 @@ public class SlideExample extends OpMode {
              .elevatorFF(0.04)
              .build();
         
-        controller.goal = new KineticState(0.0);
+        controller.setGoal(new KineticState(0));
     }
 
     @Override
     public void loop() {
         if (gamepad1.a) {
-            controller.goal = new KineticState(1000.0);
+            controller.setGoal(new KineticState(1000.0));
         } else if (gamepad1.b) {
-            controller.goal = new KineticState(0.0);
+            controller.setGoal(new KineticState(0.0));
         } else if (gamepad1.x) {
-            controller.goal = new KineticState(500.0);
+            controller.setGoal(new KineticState(500.0));
         }
 
         slideMotor.setPower(controller.calculate(
