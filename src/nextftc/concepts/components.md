@@ -10,6 +10,7 @@ NextFTC has several built-in components, including:
 
 - `BulkReadComponent`
 - `BindingsComponent` (for [NextBindings](/bindings))
+- `LoopTimeComponent`
 - `PedroComponent` (for the PedroPathing Extension)
 - `SubsystemComponent`
 - `CommandManager`
