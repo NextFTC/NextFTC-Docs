@@ -81,17 +81,17 @@ public class FlywheelExample extends OpMode {
              .velPid(0.001, 0.0, 0.0)
              .build();
         
-        controller.goal = new KineticState(0.0);
+        controller.setGoal(new KineticState(0.0));
     }
 
     @Override
     public void loop() {
         if (gamepad1.aWasPressed()) {
-            controller.goal = new KineticState(0.0, 2000.0);
+            controller.setGoal(new KineticState(2000.0));
         } else if (gamepad1.bWasPressed()) {
-            controller.goal = new KineticState(0.0, 0.0);
+            controller.setGoal(new KineticState(0.0));
         } else if (gamepad1.xWasPressed()) {
-            controller.goal = new KineticState(0.0, 1000.0);
+            controller.setGoal(new KineticState(1000.0));
         }
 
         flywheelMotor.setPower(controller.calculate(
