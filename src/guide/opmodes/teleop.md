@@ -37,7 +37,9 @@ public class TeleOpProgram extends NextFTCOpMode {
 Just like for autonomous, we need to add the required subsystems as a
 `SubsystemComponent`. We will also add a
 `BulkReadComponent`. Additionally, we will add a `BindingsComponent`, which
-allows us to use gamepads from [NextBindings](/bindings).
+allows us to use gamepads from [NextBindings](/bindings). You could also
+choose to add an instance of the LoopTimeComponent which will log your
+looptimes to your telemetry periodically.
 
 :::tabs key:code
 
@@ -49,7 +51,8 @@ class TeleOpProgram : NextFTCOpMode() {
         addComponents(
             SubsystemComponent(Lift, Claw),
             BulkReadComponent,
-            BindingsComponent
+            BindingsComponent,
+            LoopTimeComponent()
         )
     }
 }
@@ -63,7 +66,8 @@ public class TeleOpProgram extends NextFTCOpMode {
         addComponents(
             new SubsystemComponent(Lift.INSTANCE, Claw.INSTANCE),
             BulkReadComponent.INSTANCE,
-            BindingsComponent.INSTANCE
+            BindingsComponent.INSTANCE,
+            new LoopTimeComponent()
         );
     }
 }
