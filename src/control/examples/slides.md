@@ -101,10 +101,10 @@ public class SlideExample extends OpMode {
             controller.setGoal(new KineticState(500.0));
         }
 
-        slideMotor.setPower(controller.calculate(
-            slideMotor.getCurrentPosition(),
-            slideMotor.getVelocity()
-        ));
+        slideMotor.setPower(controller.calculate(new KineticState(
+                slideMotor.getCurrentPosition(), 
+                slideMotor.getVelocity()))
+        );    
     }
 }
 ```
