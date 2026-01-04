@@ -45,7 +45,7 @@ We can easily do that by simply changing the `goal` of our `ControlSystem`:
 
 ```kotlin
 class SlideExample() : OpMode() {
-    val slideMotor by lazy { hardwareMap.get(DcMotorEx.class, "slides") }
+    val slideMotor by lazy { hardwareMap.get(DcMotorEx::class.java, "slides") }
     val controller = controlSystem {
         posPid(0.1, 0.0, 0.0)
         elevatorFF(0.04)
@@ -64,10 +64,10 @@ class SlideExample() : OpMode() {
             controller.goal = KineticState(500.0)
         }
 
-        slideMotor.power = controller.calculate(
-            slideMotor.currentPosition,
+        slideMotor.power = controller.calculate(KineticState(
+            slideMotor.currentPosition.toDouble(),
             slideMotor.velocity
-        )
+        ))
     }
 }
 ```
