@@ -94,10 +94,10 @@ public class FlywheelExample extends OpMode {
             controller.setGoal(new KineticState(1000.0));
         }
 
-        flywheelMotor.setPower(controller.calculate(
-            flywheelMotor.getCurrentPosition(),
-            flywheelMotor.getVelocity()
-        ));
+        flywheelMotor.setPower(controller.calculate(new KineticState(
+                flywheelMotor.getCurrentPosition(), 
+                flywheelMotor.getVelocity()))
+        );    
     }
 }
 ```
