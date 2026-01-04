@@ -40,7 +40,7 @@ We can easily do that by simply changing the `goal` of our `ControlSystem`:
 
 ```kotlin
 class FlywheelExample() : OpMode() {
-    val flywheelMotor by lazy { hardwareMap.get(DcMotorEx.class, "flywheel") }
+    val flywheelMotor by lazy { hardwareMap.get(DcMotorEx::class.java, "flywheel") }
     val controller = controlSystem {
         velPid(0.001, 0.0, 0.0)
     }
@@ -58,10 +58,10 @@ class FlywheelExample() : OpMode() {
             controller.goal = KineticState(0.0, 1000.0)
         }
 
-        flywheelMotor.power = controller.calculate(
-            flywheelMotor.currentPosition,
-            flywheelMotor.velocity
-        )
+        flywheelMotor.power = controller.calculate(KineticState(
+             flywheelMotor.currentPosition.toDouble(),
+             flywheelMotor.velocity
+        ))
     }
 }
 ```
