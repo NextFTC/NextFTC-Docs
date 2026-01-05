@@ -45,7 +45,7 @@ We can easily do that by simply changing the `goal` of our `ControlSystem`:
 
 ```kotlin
 class SlideExample() : OpMode() {
-    val slideMotor by lazy { hardwareMap.get(DcMotorEx.class, "slides") }
+    val slideMotor by lazy { hardwareMap.get(DcMotorEx::class.java, "slides") }
     val controller = controlSystem {
         posPid(0.1, 0.0, 0.0)
         elevatorFF(0.04)
@@ -64,10 +64,10 @@ class SlideExample() : OpMode() {
             controller.goal = KineticState(500.0)
         }
 
-        slideMotor.power = controller.calculate(
-            slideMotor.currentPosition,
+        slideMotor.power = controller.calculate(KineticState(
+            slideMotor.currentPosition.toDouble(),
             slideMotor.velocity
-        )
+        ))
     }
 }
 ```
@@ -88,23 +88,23 @@ public class SlideExample extends OpMode {
              .elevatorFF(0.04)
              .build();
         
-        controller.goal = new KineticState(0.0);
+        controller.setGoal(new KineticState(0));
     }
 
     @Override
     public void loop() {
         if (gamepad1.a) {
-            controller.goal = new KineticState(1000.0);
+            controller.setGoal(new KineticState(1000.0));
         } else if (gamepad1.b) {
-            controller.goal = new KineticState(0.0);
+            controller.setGoal(new KineticState(0.0));
         } else if (gamepad1.x) {
-            controller.goal = new KineticState(500.0);
+            controller.setGoal(new KineticState(500.0));
         }
 
-        slideMotor.setPower(controller.calculate(
-            slideMotor.getCurrentPosition(),
-            slideMotor.getVelocity()
-        ));
+        slideMotor.setPower(controller.calculate(new KineticState(
+                slideMotor.getCurrentPosition(), 
+                slideMotor.getVelocity()))
+        );    
     }
 }
 ```
