@@ -1,7 +1,7 @@
 # Flywheel Example
 
 Flywheels are a commonly used mechanism in FTC for launching game elements, 
-and most often controlled with a velocity PID feedback controller.
+and most often controlled with a feedforward controller and a velocity PID controller.
 
 With NextControl, that would be implemented like this (using hypothetical constants):
 
@@ -12,6 +12,7 @@ With NextControl, that would be implemented like this (using hypothetical consta
 ```kotlin
 controlSystem {
     velPid(0.001, 0.0, 0.0)
+    basicFF(0.003, 0.08, 0.0)
 }
 ```
 
@@ -19,8 +20,9 @@ controlSystem {
 
 ```java
 ControlSystem.builder()
-             .velPid(0.001, 0.0, 0.0)
-             .build();
+    .velPid(0.001, 0.0, 0.0)
+    .basicFF(0.003, 0.08, 0.0)
+    .build();
 ```
 
 :::
@@ -43,6 +45,7 @@ class FlywheelExample() : OpMode() {
     val flywheelMotor by lazy { hardwareMap.get(DcMotorEx::class.java, "flywheel") }
     val controller = controlSystem {
         velPid(0.001, 0.0, 0.0)
+        basicFF(0.003, 0.08, 0.0)
     }
 
     override fun init() {
@@ -78,20 +81,21 @@ public class FlywheelExample extends OpMode {
         flywheelMotor = hardwareMap.get(DcMotorEx.class, "flywheel");
         
         controller = ControlSystem.builder()
-             .velPid(0.001, 0.0, 0.0)
-             .build();
+            .velPid(0.001, 0.0, 0.0)
+            .basicFF(0.003, 0.08, 0.0)
+            .build();
         
-        controller.setGoal(new KineticState(0.0));
+        controller.setGoal(new KineticState(0.0, 0.0));
     }
 
     @Override
     public void loop() {
         if (gamepad1.aWasPressed()) {
-            controller.setGoal(new KineticState(2000.0));
+            controller.setGoal(new KineticState(0.0, 2000.0));
         } else if (gamepad1.bWasPressed()) {
-            controller.setGoal(new KineticState(0.0));
+            controller.setGoal(new KineticState(0.0, 0.0));
         } else if (gamepad1.xWasPressed()) {
-            controller.setGoal(new KineticState(1000.0));
+            controller.setGoal(new KineticState(0.0, 1000.0));
         }
 
         flywheelMotor.setPower(controller.calculate(new KineticState(
