@@ -123,7 +123,6 @@ val myVoltageCompensatingMotor = VoltageCompensatingMotor(myMotorEx)
 // or with "ideal" voltage(Volts) and voltage caching time(seconds/Duration) specifications
 val myVoltageCompensatingMotor = VoltageCompensatingMotor(myMotorEx, 500.milliseconds, 12.0)
 val myVoltageCompensatingMotor = VoltageCompensatingMotor(myMotorEx, 0.5, 12.0)
-val myVoltageCompensatingMotor = VoltageCompensatingMotor(myMotorEx, "0.5", 12.0)
 ```
 
 == Java
@@ -135,7 +134,7 @@ VoltageCompensatingMotor myVoltageCompensatingMotor = new VoltageCompensatingMot
 
 // or with "ideal" voltage(Volts) and voltage caching time(seconds) specifications
 VoltageCompensatingMotor myVoltageCompensatingMotor = new VoltageCompensatingMotor(myMotorEx, 0.5, 12.0)
-VoltageCompensatingMotor myVoltageCompensatingMotor = new VoltageCompensatingMotor(myMotorEx, "0.5", 12.0)
+VoltageCompensatingMotor myVoltageCompensatingMotor = new VoltageCompensatingMotor(myMotorEx, "500ms", 12.0)
 ```
 
 :::
