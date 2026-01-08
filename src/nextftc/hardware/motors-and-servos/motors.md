@@ -103,3 +103,38 @@ MotorGroup myMotorGroup = new MotorGroup(
 ```
 
 :::
+
+## `VoltageCompensatingMotor`
+
+`VoltageCompensatingMotor` is a class that takes into consideration the voltage
+of the robot to set the power of a `MotorEx`, allowing the system to set power to
+more or less than the user input, increasing the motor's consistency/stability
+to perform in abnormal voltage levels. NextFTC allows for easy use of the 
+`VoltageCompensatingMotor` as shown below:
+
+:::tabs key:code
+== Kotlin
+
+```kotlin
+val myMotorEx = MotorEx("motor_name")
+
+val myVoltageCompensatingMotor = VoltageCompensatingMotor(myMotorEx)
+
+// or with "ideal" voltage(Volts) and voltage caching time(seconds/Duration) specifications
+val myVoltageCompensatingMotor = VoltageCompensatingMotor(myMotorEx, 500.milliseconds, 12.0)
+val myVoltageCompensatingMotor = VoltageCompensatingMotor(myMotorEx, 0.5, 12.0)
+```
+
+== Java
+
+```java
+MotorEx myMotor = new MotorEx("motor_name")
+
+VoltageCompensatingMotor myVoltageCompensatingMotor = new VoltageCompensatingMotor(myMotorEx)
+
+// or with "ideal" voltage(Volts) and voltage caching time(seconds) specifications
+VoltageCompensatingMotor myVoltageCompensatingMotor = new VoltageCompensatingMotor(myMotorEx, 0.5, 12.0)
+VoltageCompensatingMotor myVoltageCompensatingMotor = new VoltageCompensatingMotor(myMotorEx, "500ms", 12.0)
+```
+
+:::
