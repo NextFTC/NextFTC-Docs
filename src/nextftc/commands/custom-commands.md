@@ -20,7 +20,7 @@ public static Command runToPosition(ControlSystem system, double position, Kinet
             .setStart(() -> system.setGoal(new KineticState(position)))
             .setIsDone(() -> system.isWithinTolerance(tolerance))
             .requires(system);
-{
+}
 ```
 
 Because Java doesn't have default parameters,
