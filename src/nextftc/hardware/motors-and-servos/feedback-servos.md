@@ -52,35 +52,19 @@ The caching tolerance is the same for any normal `ServoEx` or other implementati
 == Kotlin 
 
 ```kotlin
-val servo: FeedbackCRServoEx = FeedbackCRServoEx("analog-name", "servo-name", 0.01)
-
-// Alternatively
 val servo: FeedbackCRServoEx = FeedbackCRServoEx {
     cacheTolerance = 0.01, // Or whatever you'd like to use
     feedbackFactory = { ActiveOpMode.hardwareMap.analogInput.get("analog-name") },
     servoFactory = { ActiveOpMode.hardwareMap.crservo.get("servo-name") }
 }
-
-// Alternatively
-val analogInput: AnalogInput = ActiveOpMode.hardwareMap.analogInput.get("analog-name")
-val servoFactory: CRServo = ActiveOpMode.hardwareMap.crservo.get("servo-name")
-val servo: FeedbackCRServoEx = FeedbackCRServoEx(analogInput, servoFactory, 0.01) // Using cache tolerance = 0.01
 ```
 == Java
 ```java
-FeedbackCRServoEx servo = new FeedbackCRServoEx("analog-name", "servo-name", 0.01);
-
-// Alternatively
 FeedbackCRServoEx servo = new FeedbackCRServoEx(
     0.01, // Or your preferred cache tolerance
     () -> { ActiveOpMode.hardwareMap().analogInput.get("analog-name") }, 
     () -> { ActiveOpMode.hardwareMap().crservo.get("servo-name") }
 );
-
-// Alternatively
-AnalogInput analogInput = ActiveOpMode.hardwareMap.analogInput.get("analog-name");
-CRServo servoFactory = ActiveOpMode.hardwareMap.crservo.get("servo-name");
-FeedbackCRServoEx servo = new FeedbackCRServoEx(analogInput, servoFactory, 0.01);
 ```
 ==
 :::
