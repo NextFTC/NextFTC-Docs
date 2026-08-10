@@ -1,0 +1,70 @@
+---
+title: Your First TeleOp
+description: Binding your mechanism's commands to a gamepad.
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Now that your mechanisms are registered on your `NextRobot`, you can bind their commands to gamepad buttons in a TeleOp.
+
+## Creating the OpMode
+
+A `NextOpMode` takes your `NextRobot` and gives you access to all your mechanisms through it. Bind commands to gamepad buttons using a `CommandGamepad`.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+@NextTeleop(name = "My TeleOp")
+class MyTeleop(robot: MyRobot) : NextOpMode(robot) {
+
+    val robot = robot
+
+    init {
+        val gp1 = CommandGamepad(Trigger.defaultEventLoop, gamepad1)
+
+        robot.startDrive(gamepad1) //reference from DriveUtil page
+
+        gp1.rightBumper().onTrue(robot.intake.intake())
+        gp1.leftBumper().onTrue(robot.intake.off())
+        gp1.a().onTrue(robot.launch())
+    }
+
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+@NextTeleop(name = "My TeleOp")
+public class MyTeleop extends NextOpMode {
+
+    private final MyRobot robot;
+
+    public MyTeleop(MyRobot robot) {
+        super(robot);
+        this.robot = robot;
+
+        CommandGamepad gp1 = new CommandGamepad(gamepad1);
+
+        robot.startDrive(gamepad1); //reference from DriveUtil page
+
+        gp1.rightBumper().onTrue(robot.intake.intake());
+        gp1.leftBumper().onTrue(robot.intake.off());
+        gp1.a().onTrue(robot.launch());
+    }
+
+}
+```
+
+</TabItem>
+</Tabs>
+
+Each button just schedules a command you already wrote on your mechanisms. `onTrue` runs the command once when the button is pressed. Click these for a more detailed readings of [`Triggers`](/robot/triggers/) and [`CommandGamepad`](/robot/command-gamepad)
+
+## What's next
+
+Next, you'll put this all together into an autonomous OpMode.

@@ -1,0 +1,104 @@
+---
+title: Your First Mechanism
+description: Wrapping your hardware into a mechanism and controlling it with commands.
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import { Aside } from "@astrojs/starlight/components";
+
+
+A mechanism groups the hardware that makes up one part of your robot like an intake, along with the commands that control it.
+
+## Defining your Mechanism and Hardware
+
+Start first by creating your class that implements Mechanism. Then declare the hardware your mechanism uses. Here's an intake with a motor and a servo.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class Intake : Mechanism {
+
+    val intakeMotor = NextMotor(RobotController.controlHub(), 2)
+    val intakeServo = NextServo(RobotController.controlHub(), 4)
+
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class Intake implements Mechanism {
+
+    NextMotor intakeMotor = new NextMotor(RobotController.controlHub(), 2);
+    NextServo intakeServo = new NextServo(RobotController.controlHub(), 4);
+
+}
+```
+</TabItem>
+</Tabs>
+
+<Aside type="tip" title="">
+    When possible, use a direct Lynx Module accessor like above, it skips the hardware map lookup and saves you a step in creating a config.
+</Aside>
+
+
+## Writing commands
+
+Instead of tracking a state machine and constantly sending hardware, each command just sets the hardware directly when it's scheduled. You can use `instant` commands for the actions your intake will do, and `instant` command will run once and finish instantly.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+    fun start(): Command = instant {
+        intakeMotor.setThrottle(FORWARD_SPEED)
+        intakeServo.setPosition(INTAKE_POS)
+    }
+
+    fun reverse(): Command = instant {
+        intakeMotor.setThrottle(REVERSE_SPEED)
+        intakeServo.setPosition(LIFT_POS)
+    }
+
+    fun off(): Command = instant {
+        intakeMotor.setThrottle(OFF_SPEED)
+        intakeServo.setPosition(LIFT_POS)
+    }
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+    public Command start() {
+        return instant(() -> {
+            intakeMotor.setThrottle(FORWARD_SPEED);
+            intakeServo.setPosition(INTAKE_POS);
+        });
+    }
+
+    public Command reverse() {
+        return instant(() -> {
+            intakeMotor.setThrottle(REVERSE_SPEED);
+            intakeServo.setPosition(LIFT_POS);
+        });
+    }
+
+    public Command off() {
+        return instant(() -> {
+            intakeMotor.setThrottle(OFF_SPEED);
+            intakeServo.setPosition(LIFT_POS);
+        });
+    }
+```
+
+</TabItem>
+</Tabs>
+
+## What's next
+
+Next we will walk through how to set up your `NextRobot`, where you're able to register mechanisms and make different mechanisms to work together across every OpMode.

@@ -1,0 +1,93 @@
+---
+title: Your First NextRobot
+description: Setting up your NextRobot to register mechanisms and share them across every OpMode.
+sidebar:
+  order: 4
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import { Aside } from "@astrojs/starlight/components";
+
+Your `NextRobot` is where all your mechanisms come together. It's shared across every OpMode, so instead of re-creating your mechanisms in each one, you register them once here.
+
+## Defining your robot
+
+Create a class that implements `NextRobot`, and add an instance of each mechanism as a field:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class MyRobot : NextRobot {
+
+    val intake = Intake()
+    val transfer = Transfer()
+    val launcher = Launcher()
+
+    override fun getMechanisms(): Set<Mechanism> {
+        return setOf(intake, transfer, launcher)
+    }
+
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class MyRobot implements NextRobot {
+
+    public final Intake intake = new Intake();
+    public final Transfer transfer = new Transfer();
+    public final Launcher launcher = new Launcher();
+
+    @Override
+    public Set<Mechanism> getMechanisms() {
+        return Set.of(intake, transfer, launcher);
+    }
+
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Coordinating Mechanisms
+
+Because every mechanism lives on the same `robot`, they can reference each other directly. This is how you make mechanisms work together, for example, having the transfer kicker kick once the launcher`s up to speed:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+fun launch(): Command = SequentialGroup(
+    launcher.start(),
+    transfer.kick(),
+    intake.start()
+)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public Command launch() {
+    return new SequentialGroup(
+        launcher.start(),
+        transfer.kick(),
+        intake.start()
+    );
+}
+```
+
+</TabItem>
+</Tabs>
+
+<Aside type="tip" title="">
+    For setting up your drivetrain, refer to the [drive utils](/robot/drive-util/) page.
+</Aside>
+
+
+## What's next
+
+Next, you'll learn how to create your first tele op with v2.
