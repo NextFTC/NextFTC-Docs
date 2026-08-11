@@ -1,0 +1,126 @@
+---
+title: Your First Autonomous
+description: Combining commands and Pedro Pathing into a working autonomous OpMode.
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+An autonomous OpMode uses `@NextAutonomous` instead of `@NextTeleop`, and instead of binding commands to gamepad buttons, you schedule a routine when the OpMode starts. This routine can combine your mechanism commands with driving, using Pedro Pathing.
+
+## Pedro commands
+
+Ivy includes built-in commands for controlling your robot's movement using [Pedro Pathing](https://pedropathing.com/).
+
+`follow` makes the robot follow a `PathChain`, and finishes once the follower is no longer busy.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val goToScore: Command = follow(follower, scorePath)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Command goToScore = follow(follower, scorePath);
+```
+
+</TabItem>
+</Tabs>
+
+## Building the routine
+
+Because `follow` is a command just like any other, it fits right into a `SequentialGroup` alongside your mechanism commands. Here, the robot drives to `scorePath`'s end, then intakes, then fires. It's common to keep routines like this in their own class, separate from your OpMode:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class Routines(val robot: MyRobot, val follower: Follower) {
+
+    fun autoRoutine(): Command = SequentialGroup(
+        follow(follower, scorePath),
+        robot.intake.intake(),
+        robot.fire()
+    )
+
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class Routines {
+
+    private final MyRobot robot;
+    private final Follower follower;
+
+    public Routines(MyRobot robot, Follower follower) {
+        this.robot = robot;
+        this.follower = follower;
+    }
+
+    public Command autoRoutine() {
+        return new SequentialGroup(
+            follow(follower, scorePath),
+            robot.intake.intake(),
+            robot.fire()
+        );
+    }
+
+}
+```
+</TabItem>
+</Tabs>
+
+
+## Creating the OpMode
+
+Schedule the routine when the OpMode starts:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+@NextAutonomous(name = "My Autonomous")
+class MyAutonomous(robot: MyRobot) : NextOpMode(robot) {
+
+    val robot = robot
+
+    init {
+        val routines = Routines(robot, follower)
+        routines.autoRoutine().schedule()
+    }
+
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+@NextAutonomous(name = "My Autonomous")
+public class MyAutonomous extends NextOpMode {
+
+    private final MyRobot robot;
+
+    public MyAutonomous(MyRobot robot) {
+        super(robot);
+        this.robot = robot;
+
+        Routines routines = new Routines(robot, follower);
+        routines.autoRoutine().schedule();
+    }
+
+}
+```
+
+</TabItem>
+</Tabs>
+
+That's it, you've gone from a creating your first mechanism all the way to a full autonomous OpMode.
