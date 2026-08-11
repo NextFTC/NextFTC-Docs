@@ -6,6 +6,7 @@ sidebar:
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
+import { Aside } from "@astrojs/starlight/components";
 
 Now that your mechanisms are registered on your `NextRobot`, you can bind their commands to gamepad buttons in a TeleOp.
 
@@ -63,9 +64,10 @@ public class MyTeleop extends NextOpMode {
 
 </TabItem>
 </Tabs>
-
+<Aside type="note" title="TODO">
 Each button just schedules a command you already wrote on your mechanisms. `onTrue` runs the command once when the button is pressed.
 Click these for a more detailed readings of [`Triggers`](/robot/triggers/) and [`CommandGamepad`](/robot/command-gamepad)
+</Aside>
 
 ## What's next
 
