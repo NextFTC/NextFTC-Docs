@@ -7,7 +7,8 @@ sidebar:
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 
-An autonomous OpMode uses `@NextAutonomous` instead of `@NextTeleop`, and instead of binding commands to gamepad buttons, you schedule a routine when the OpMode starts. This routine can combine your mechanism commands with driving, using Pedro Pathing.
+An autonomous OpMode uses `@NextAutonomous` instead of `@NextTeleop`, and instead of binding commands to gamepad buttons, you schedule a routine when the OpMode starts.
+This routine can combine your mechanism commands with driving, using Pedro Pathing.
 
 ## Pedro commands
 
@@ -34,7 +35,9 @@ Command goToScore = follow(follower, scorePath);
 
 ## Building the routine
 
-Because `follow` is a command just like any other, it fits right into a `SequentialGroup` alongside your mechanism commands. Here, the robot drives to `scorePath`'s end, then intakes, then fires. It's common to keep routines like this in their own class, separate from your OpMode:
+Because `follow` is a command just like any other, it fits right into a `SequentialGroup` alongside your mechanism commands.
+Here, the robot drives to `scorePath`'s end, then intakes, then fires.
+It's common to keep routines like this in their own class, separate from your OpMode:
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
@@ -45,7 +48,7 @@ class Routines(val robot: MyRobot, val follower: Follower) {
     fun autoRoutine(): Command = SequentialGroup(
         follow(follower, scorePath),
         robot.intake.intake(),
-        robot.fire()
+        robot.launch()
     )
 
 }
@@ -69,15 +72,15 @@ public class Routines {
         return new SequentialGroup(
             follow(follower, scorePath),
             robot.intake.intake(),
-            robot.fire()
+            robot.launch()
         );
     }
 
 }
 ```
+
 </TabItem>
 </Tabs>
-
 
 ## Creating the OpMode
 

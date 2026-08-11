@@ -8,12 +8,13 @@ sidebar:
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 import { Aside } from "@astrojs/starlight/components";
 
-
 A mechanism groups the hardware that makes up one part of your robot like an intake, along with the commands that control it.
 
 ## Defining your Mechanism and Hardware
 
-Start first by creating your class that implements Mechanism. Then declare the hardware your mechanism uses. Here's an intake with a motor and a servo.
+Start first by creating your class that implements Mechanism.
+Then declare the hardware your mechanism uses.
+Here's an intake with a motor and a servo.
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
@@ -38,17 +39,19 @@ public class Intake implements Mechanism {
 
 }
 ```
+
 </TabItem>
 </Tabs>
 
 <Aside type="tip" title="">
-    When possible, use a direct Lynx Module accessor like above, it skips the hardware map lookup and saves you a step in creating a config.
+  When possible, use a direct Lynx Module accessor like above, it skips the
+  hardware map lookup and saves you a step in creating a config.
 </Aside>
-
 
 ## Writing commands
 
-Instead of tracking a state machine and constantly sending hardware, each command just sets the hardware directly when it's scheduled. You can use `instant` commands for the actions your intake will do, and `instant` command will run once and finish instantly.
+Instead of tracking a state machine and constantly sending hardware, each command just sets the hardware directly when it's scheduled.
+You can use `instant` commands for the actions your intake will do, and `instant` command will run once and finish instantly.
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
