@@ -16,14 +16,14 @@ This lets you map controller inputs directly to commands using the WPILib-style 
 <TabItem label="Kotlin">
 
 ```kotlin
-val gp1 = CommandGamepad(gamepad = gamepad1)
+val gp1 = CommandGamepad(gamepad1)
 ```
 
 </TabItem>
 <TabItem label="Java">
 
 ```java
-CommandGamepad gp1 = new CommandGamepad(Trigger.getDefaultEventLoop(), gamepad1);
+CommandGamepad gp1 = new CommandGamepad(gamepad1);
 ```
 
 </TabItem>
@@ -56,10 +56,10 @@ gp1.circle().onFalse(robot.intake.off());
 </TabItem>
 </Tabs>
 
-### Sticks and triggers
+### Sticks and Triggers
 
-Are exposed as `RangeTrigger`s instead of plain `Trigger`s, since they report an analog value rather than a simple boolean.
-Allowing you to use `RangeTrigger`s like `isOver()` or `isUnder()` etc.
+They are exposed as `RangeTrigger`s instead of plain `Trigger`s, since they report an analog value rather than a simple boolean, letting you
+use `RangeTrigger` methods like `isOver()` or `isUnder()`.
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
