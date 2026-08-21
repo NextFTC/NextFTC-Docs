@@ -58,8 +58,8 @@ gp1.circle().onFalse(robot.intake.off());
 
 ### Sticks and Triggers
 
-They are exposed as `RangeTrigger`s instead of plain `Trigger`s, since they report an analog value rather than a simple boolean, letting you
-use `RangeTrigger` methods like `isOver()` or `isUnder()`.
+Joysticks and gamepad triggers are exposed as `RangeTrigger`s instead of regular `Trigger`s,
+since they report an analog value rather than a boolean value, letting you
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
