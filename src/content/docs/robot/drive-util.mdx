@@ -1,0 +1,181 @@
+---
+title: Drive Util
+description: Setting up and driving a mecanum or tank drivetrain.
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+NextFTC v2 provides functions to drive mecanum and tank drivetrains from a gamepad, so you don't have to write the math yourself.
+
+:::note
+Currently, NextFTC only has driving functions for mecanum and tank (differential) drivetrains.
+If you write one for another drivetrain, please share it with us!
+:::
+
+## Register your motors on a `Drivetrain` mechanism
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class Drivetrain : Mechanism {
+    val frontLeft = NextMotor(//...)
+    val frontRight = NextMotor(//...)
+    val backLeft = NextMotor(//...)
+    val backRight = NextMotor(//...)
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class Drivetrain implements Mechanism {
+    public Drivetrain(){}
+
+    public final NextMotor frontLeft = new NextMotor(//...);
+    public final NextMotor frontRight = new NextMotor(//...);
+    public final NextMotor backLeft = new NextMotor(//...);
+    public final NextMotor backRight = new NextMotor(//...);
+}
+```
+
+</TabItem>
+</Tabs>
+
+Register it on your `NextRobot’s` `getMechanisms()` set, just like any other mechanism.
+
+## In your `Robot` class, add a `startDrive` method like this:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+fun startDrive(gamepad1: Gamepad) {
+    mecanumDrive(
+        drivetrain.frontLeft,
+        drivetrain.frontRight,
+        drivetrain.backLeft,
+        drivetrain.backRight,
+        gamepad1,
+    )()
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public void startDrive(Gamepad gamepad1) {
+    DriveCommands.mecanumDrive(
+        drivetrain.frontLeft,
+        drivetrain.frontRight,
+        drivetrain.backLeft,
+        drivetrain.backRight,
+        gamepad1,
+    )();
+}
+```
+
+</TabItem>
+</Tabs>
+
+For a tank drivetrain, swap in `tankDrive`
+
+## Call `startDrive` in your TeleOp
+
+Call this once, in your TeleOp’s constructor and your set!
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+robot.startDrive(gamepad1)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+robot.startDrive(gamepad1);
+```
+
+</TabItem>
+</Tabs>
+
+## Field-Centric
+
+`mecanumDriveFieldCentric` rotates stick input by the robot’s current heading, so "forward" on the stick always moves the robot away from the driver.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+mecanumDriveFieldCentric(
+    drivetrain.frontLeft,
+    drivetrain.frontRight,
+    drivetrain.backLeft,
+    drivetrain.backRight,
+    gamepad1,
+    { //insert heading},
+)()
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+DriveCommands.mecanumDriveFieldCentric(
+    drivetrain.frontLeft,
+    drivetrain.frontRight,
+    drivetrain.backLeft,
+    drivetrain.backRight,
+    gamepad1,
+    () -> //insert heading,
+)();
+```
+
+</TabItem>
+</Tabs>
+
+## Scalars
+
+Multiplies your gamepad inputs by a scalar to support different speed modes or sensitivities.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+scalar = 0.5 // makes it half speed
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+DriveCommands.setScalar(0.5); // makes it half speed
+```
+
+</TabItem>
+</Tabs>
+
+A common way to use `Scalar` is a slow mode:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+gp1.leftBumper().whileTrue(Commands.infinite { scalar = 0.4 })
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+gp1.leftBumper().whileTrue(Commands.infinite(() -> DriveCommands.setScalar(0.4)));
+```
+
+</TabItem>
+</Tabs>
