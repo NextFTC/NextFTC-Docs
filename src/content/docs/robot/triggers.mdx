@@ -38,13 +38,13 @@ CommandGamepad driver = new CommandGamepad(gamepad1);
 
 A `Trigger` is a boolean condition plus the methods that bind a command to how that condition changes:
 
-| Method          | Schedules the command when...                           | Cancels it when...      |
-| --------------- | ------------------------------------------------------- | ----------------------- |
-| `onTrue`        | condition goes false to true                            | never                   |
-| `onFalse`       | condition goes true to false                            | never                   |
-| `onChange`      | condition changes in either direction                   | never                   |
-| `whileTrue`     | condition goes false to true                            | it goes back to false   |
-| `whileFalse`    | condition goes true to false                            | it goes back to true    |
+| Method          | Schedules the command when...                              | Cancels it when...      |
+| --------------- | ---------------------------------------------------------- | ----------------------- |
+| `onTrue`        | condition goes false to true                               | never                   |
+| `onFalse`       | condition goes true to false                               | never                   |
+| `onChange`      | condition changes in either direction                      | never                   |
+| `whileTrue`     | condition goes false to true                               | it goes back to false   |
+| `whileFalse`    | condition goes true to false                               | it goes back to true    |
 | `toggleOnTrue`  | condition goes false to true and the command isn't running | the same edge, if it is |
 | `toggleOnFalse` | condition goes true to false and the command isn't running | the same edge, if it is |
 

@@ -22,7 +22,8 @@ NextFTC looks for a class implementing `NextRobot` that is:
 - not annotated `@Disabled`, and
 - either has a public no-arg constructor or, in Kotlin, is a singleton `object`.
 
-We recommend the no-arg constructor. It works identically in Kotlin and Java.
+We recommend the no-arg constructor.
+It works identically in Kotlin and Java.
 
 Exactly one class should qualify.
 If none does, or if two do, NextFTC throws on startup with a message saying which case it hit,
