@@ -1,0 +1,12 @@
+{
+  "tabWidth": 2,
+  "plugins": ["prettier-plugin-astro", "prettier-plugin-sentences-per-line"],
+  "overrides": [
+    {
+      "files": "*.mdx",
+      "options": {
+        "proseWrap": "preserve"
+      }
+    }
+  ]
+}

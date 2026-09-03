@@ -1,0 +1,129 @@
+---
+title: Triggers and RangeTriggers
+description: Binding gamepad input directly to commands with Trigger and RangeTrigger.
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Checking `gamepad1.a` yourself means tracking last loop's value to catch the press,
+then deciding when to schedule and when to cancel.
+Triggers do that bookkeeping.
+Bind a command once, and NextFTC polls the condition and schedules or cancels for you every loop.
+
+The examples use a `driver` of type `CommandGamepad`,
+which wraps an FTC `Gamepad` and exposes every button as a `Trigger` and every stick and analog
+trigger as a `RangeTrigger`.
+Build one in your OpMode's `start()`:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val driver = CommandGamepad(gamepad1)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+CommandGamepad driver = new CommandGamepad(gamepad1);
+```
+
+</TabItem>
+</Tabs>
+
+## `Trigger`
+
+A `Trigger` is a boolean condition plus the methods that bind a command to how that condition changes:
+
+| Method          | Schedules the command when...                              | Cancels it when...      |
+| --------------- | ---------------------------------------------------------- | ----------------------- |
+| `onTrue`        | condition goes false to true                               | never                   |
+| `onFalse`       | condition goes true to false                               | never                   |
+| `onChange`      | condition changes in either direction                      | never                   |
+| `whileTrue`     | condition goes false to true                               | it goes back to false   |
+| `whileFalse`    | condition goes true to false                               | it goes back to true    |
+| `toggleOnTrue`  | condition goes false to true and the command isn't running | the same edge, if it is |
+| `toggleOnFalse` | condition goes true to false and the command isn't running | the same edge, if it is |
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+driver.a.onTrue(claw.close())
+driver.b.whileTrue(intake.run())
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+driver.a().onTrue(claw.close());
+driver.b().whileTrue(intake.run());
+```
+
+</TabItem>
+</Tabs>
+
+Every one of these returns the trigger, so you can bind more than one command to the same button.
+
+Combine triggers with `and`, `or`, and `negate`.
+`debounce(seconds)` requires the condition to hold that long before it counts, which filters
+out a flaky switch or a bumped button.
+`multiPress(requiredPresses, windowTime)` waits for that many presses inside the window,
+so `multiPress(2, 0.5)` is a double-press.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+driver.a.and(driver.rightBumper).onTrue(climb.start())
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+driver.a().and(driver.rightBumper()).onTrue(climb.start());
+```
+
+</TabItem>
+</Tabs>
+
+## `RangeTrigger`
+
+A `RangeTrigger` holds an analog value, either a stick axis or an analog trigger.
+Read `value` for the raw number, or turn a threshold into a `Trigger`:
+
+| Method                    | Active when...                    |
+| ------------------------- | --------------------------------- |
+| `isOver(threshold)`       | value is greater than `threshold` |
+| `isUnder(threshold)`      | value is less than `threshold`    |
+| `isBetween(lower, upper)` | value is within `[lower, upper]`  |
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+driver.rightTrigger.isOver(0.5).onTrue(intake.run())
+
+val rawValue = driver.leftStickY.value
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+driver.rightTrigger().isOver(0.5).onTrue(intake.run());
+
+double rawValue = driver.leftStickY().getValue();
+```
+
+</TabItem>
+</Tabs>
+
+`isOver`, `isUnder`, and `isBetween` all return an ordinary `Trigger`,
+so every binding method in the table above works on the result,
+along with `and`, `or`, `debounce`, and the rest.

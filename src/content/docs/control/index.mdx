@@ -1,0 +1,172 @@
+---
+title: Control Module
+description: PID, feedforward, geometry, and motion profiling.
+---
+
+import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
+
+The `control` module is a WPILib-style control theory library: feedback controllers, feedforward models,
+signal filters, motion profiling, typed 2D geometry, and a type-safe units system.
+It has no dependency on the FTC SDK,
+so it can be used entirely on its own, even outside of a robot project.
+
+## PID control
+
+`PIDController` implements a standard PID loop, with optional continuous input for wrapping angles.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val pid = PIDController(PIDCoefficients(kP = 0.01, kI = 0.0, kD = 0.001))
+
+val output = pid.calculate(error = setpoint - currentPosition)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+PIDController pid = new PIDController(new PIDCoefficients(0.01, 0.0, 0.001));
+
+double output = pid.calculate(setpoint - currentPosition);
+```
+
+</TabItem>
+</Tabs>
+
+## Feedforward
+
+`SimpleFeedforward` models a mechanism with static friction, velocity, and acceleration terms.
+`ElevatorFeedforward` and `ArmFeedforward` add a gravity term for mechanisms that fight gravity.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val feedforward = ArmFeedforward(GravityFeedforwardParameters(kG = 0.3, kV = 0.01))
+
+val output = feedforward.calculate(position = armAngle, velocity = targetVelocity)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+ArmFeedforward feedforward = new ArmFeedforward(new GravityFeedforwardParameters(0.3, 0.0, 0.01, 0.0));
+
+double output = feedforward.calculate(armAngle, targetVelocity, 0.0);
+```
+
+</TabItem>
+</Tabs>
+
+## Geometry
+
+`Pose2d`, `Vector2d`, and `Rotation2d` model robot position and orientation,
+adapted from RoadRunner and WPILib.
+They support the full range of operators you'd expect: adding a `Twist2d` to a `Pose2d`,
+composing rotations, taking the relative transform between two poses, and more.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val pose = Pose2d(x = 12.0, y = 24.0, heading = 90.0.degrees)
+val relative = otherPose.relativeTo(pose)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Pose2d pose = new Pose2d(12.0, 24.0, Units.Degrees.of(90.0));
+Transform2d relative = otherPose.relativeTo(pose);
+```
+
+</TabItem>
+</Tabs>
+
+## Motion profiling
+
+`TrapezoidProfile` generates a smooth acceleration/cruise/deceleration profile between two `MotionState`s,
+respecting maximum velocity and acceleration constraints.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val profile = TrapezoidProfile(TrapezoidProfileConstraints.linear(maxVelocity = 30.0, maxAcceleration = 60.0))
+
+val state = profile.calculate(current = currentState, goal = goalState)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+TrapezoidProfile profile = new TrapezoidProfile(TrapezoidProfileConstraints.linear(30.0, 60.0));
+
+MotionState state = profile.calculate(currentState, goalState);
+```
+
+</TabItem>
+</Tabs>
+
+## Drive kinematics
+
+`MecanumKinematics` and `TankKinematics` convert raw driver input (forward, strafe, and rotation) into
+per-wheel power for their respective drivetrains.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val kinematics = MecanumKinematics()
+val powers = kinematics.calculate(DriveInput(x = gamepad.leftStickX.value, y = -gamepad.leftStickY.value, rx = gamepad.rightStickX.value))
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+MecanumKinematics kinematics = new MecanumKinematics();
+MecanumWheelPowers powers = kinematics.calculate(new DriveInput(gamepad.leftStickX().getValue(), -gamepad.leftStickY().getValue(), gamepad.rightStickX().getValue()));
+```
+
+</TabItem>
+</Tabs>
+
+## Filters
+
+`EMAFilter` and `SlewRateLimiter` smooth out noisy or jumpy signals, `Debouncer` filters chattery boolean input,
+and `KalmanFilter` fuses multiple noisy measurements into a single best estimate of state.
+
+## Units
+
+Every measurement in the `control` module is typed, using extension properties instead of bare doubles:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val distance = 5.0.meters
+val speed = distance / 2.0.seconds // a LinearVelocity, not a raw Double
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Distance distance = Units.Meters.of(5.0);
+LinearVelocity speed = distance.div(Units.Seconds.of(2.0)); // a LinearVelocity, not a raw double
+```
+
+</TabItem>
+</Tabs>
+
+<Aside type="tip">
+  Dividing or multiplying two measures always produces a typed result: dividing
+  a `Distance` by a `Time` gives you a genuine `LinearVelocity`, not a bare
+  number, so unit mistakes get caught by the compiler instead of on the field.
+</Aside>

@@ -1,0 +1,142 @@
+---
+title: Mechanisms
+description: One subsystem, its hardware, and the commands that move it.
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+A `Mechanism` is one subsystem: an arm, a claw, a drivetrain.
+It holds the hardware for that subsystem, the commands that move it,
+and any logic that has to run every loop.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+interface Mechanism {
+    fun periodic() {}
+    val defaultCommand: Command get() = infinite {}
+    fun instant(action: Runnable): CommandBuilder
+    fun infinite(action: Runnable): CommandBuilder
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public interface Mechanism {
+    default void periodic() {}
+    default Command getDefaultCommand() { return infinite(() -> {}); }
+    CommandBuilder instant(Runnable action);
+    CommandBuilder infinite(Runnable action);
+}
+```
+
+</TabItem>
+</Tabs>
+
+## `periodic()`
+
+Runs once per loop, for every mechanism listed in your [`NextRobot`](/robot/nextrobot/)'s `mechanisms` set.
+Put anything here that has to run no matter which command is active:
+reading a sensor, or a PID loop holding a position.
+
+## `instant` and `infinite`
+
+Both build an [Ivy](/robot/commands/) command and call `requiring(this)` on it,
+so the scheduler knows the command owns this mechanism.
+Two commands can never drive the same hardware at the same time.
+`instant` runs its action once.
+`infinite` re-runs its action every loop until something cancels it.
+
+## `defaultCommand`
+
+The command that runs whenever nothing else has claimed the mechanism.
+NextFTC schedules it when the OpMode starts, at the lowest possible priority,
+so any real command you bind takes over and the default resumes once that command ends.
+The default default does nothing, so override it only if idle should mean something specific:
+holding an arm at its current position, or zeroing a motor's throttle.
+
+## Example: a simple mechanism
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class Claw : Mechanism {
+    val servo = NextServo("clawServo")
+
+    fun open() = instant { servo.position = 0.2 }
+    fun close() = instant { servo.position = 0.8 }
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class Claw implements Mechanism {
+    NextServo servo = new NextServo("clawServo");
+
+    public Command open() { return instant(() -> servo.setPosition(0.2)); }
+    public Command close() { return instant(() -> servo.setPosition(0.8)); }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Example: using `periodic()`
+
+Here's an intake that stops itself once a distance sensor says it has a game piece.
+The check lives in `periodic()`, so it happens whether or not the intake command is running:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class Intake : Mechanism {
+    val motor = NextMotor("intakeMotor")
+    val sensor = NextDistanceSensor("intakeSensor")
+
+    override fun periodic() {
+        sensor.update()
+        if (sensor.isWithinDistance(2.0)) {
+            motor.throttle = 0.0
+        }
+    }
+
+    fun run() = instant { motor.throttle = 1.0 }
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class Intake implements Mechanism {
+    NextMotor motor = new NextMotor("intakeMotor");
+    NextDistanceSensor sensor = new NextDistanceSensor("intakeSensor");
+
+    @Override
+    public void periodic() {
+        sensor.update();
+        if (sensor.isWithinDistance(2.0)) {
+            motor.setThrottle(0.0);
+        }
+    }
+
+    public Command run() {
+        return instant(() -> motor.setThrottle(1.0));
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`periodic()` only runs if the mechanism is in your [`NextRobot`](/robot/nextrobot/)'s `mechanisms` set.
+Forgetting to add it there is the usual reason this kind of code seems to do nothing.

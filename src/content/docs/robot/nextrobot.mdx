@@ -1,0 +1,87 @@
+---
+title: NextRobot
+description: The one class that lists your mechanisms. NextFTC finds it and hands it to every OpMode.
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+Your `NextRobot` implementation lists the [mechanisms](/robot/mechanisms/) on your robot.
+Write one, and every [`NextOpMode`](/robot/nextopmode/) gets the same instance of it.
+You never call its constructor and you never register it anywhere.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+interface NextRobot {
+    fun periodic() {}
+    val mechanisms: Set<Mechanism> get() = emptySet()
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public interface NextRobot {
+    default void periodic() {}
+    default Set<Mechanism> getMechanisms() { return Collections.emptySet(); }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## `mechanisms`
+
+Every [`Mechanism`](/robot/mechanisms/) on your robot.
+NextFTC calls `periodic()` on each one every loop, and schedules each one's default command at start.
+A mechanism left out of this set gets neither.
+
+## `periodic()`
+
+Called once per loop, before any of your mechanisms' `periodic()` methods.
+Use it for robot-wide logic that doesn't belong to any single mechanism.
+
+## Example
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class MyRobot : NextRobot {
+    val claw = Claw()
+    val arm = Arm()
+
+    override val mechanisms = setOf(claw, arm)
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class MyRobot implements NextRobot {
+    Claw claw = new Claw();
+    Arm arm = new Arm();
+
+    @Override
+    public Set<Mechanism> getMechanisms() {
+        return Set.of(claw, arm);
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Discovery
+
+NextFTC scans the classpath at runtime to find your `NextRobot`.
+Give your class a public no-arg constructor, which is what we recommend in both Kotlin and Java,
+and it gets picked up and passed to your `NextOpMode`s.
+Write exactly one implementation.
+Zero or two or more, and NextFTC throws instead of guessing which one you meant.
+See [robot project structure](/robot/project-structure/) for the rest of the rules.

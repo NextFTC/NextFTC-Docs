@@ -1,0 +1,89 @@
+---
+title: Feedback Servos
+description: Reading actual servo angle with NextFeedbackServo and NextFeedbackCRServo
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`NextFeedbackServo` and `NextFeedbackCRServo` pair a [`NextServo`](/hardware/actuators/servos) or [`NextCRServo`](/hardware/actuators/cr-servos) with an analog feedback input, for servos with a feedback wire (e.g. Axon).
+They inherit everything from their base class and add `angle` for reading the servo's actual physical angle.
+
+## Creating a feedback servo
+
+Both classes pair the constructors you already know from [`NextServo`](/hardware/actuators/servos) and [`NextCRServo`](/hardware/actuators/cr-servos) with an already-constructed `AnalogFeedback` instance for reading the angle. `NextAnalogInput` is the built-in implementation of `AnalogFeedback`, and is what you'll use in most cases.
+All of these below are interchangeable with `NextFeedbackCRServo`.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// By configuration name
+val armServo = NextFeedbackServo("armServo", NextAnalogInput("armEncoder"))
+
+// By Lynx Module and port
+val armServo = NextFeedbackServo(RobotController.expansionHub, 0, NextAnalogInput(RobotController.expansionHub, 0))
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// By configuration name
+NextFeedbackServo armServo = new NextFeedbackServo("armServo", new NextAnalogInput("armEncoder"));
+
+// By Lynx Module and port
+NextFeedbackServo armServo = new NextFeedbackServo(RobotController.getExpansionHub(), 0, new NextAnalogInput(RobotController.getExpansionHub(), 0));
+```
+
+</TabItem>
+</Tabs>
+
+`feedback` accepts any `AnalogFeedback` implementation, so you can also write your own if `NextAnalogInput` doesn't fit what you want. `AnalogFeedback` just needs a `maxVoltage` and a `Supplier<Double>` that returns the raw voltage from wherever you're reading it
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val myAnalogInput = hardwareMap.get(AnalogInput::class.java, "armEncoder")
+
+val customFeedback = AnalogFeedback(maxVoltage = 3.3.volts) { myAnalogInput.voltage }
+
+val armServo = NextFeedbackServo("armServo", customFeedback)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+AnalogInput myAnalogInput = hardwareMap.get(AnalogInput.class, "armEncoder");
+
+AnalogFeedback customFeedback = new AnalogFeedback(3.3.volts, () -> myAnalogInput.getVoltage());
+
+NextFeedbackServo armServo = new NextFeedbackServo("armServo", customFeedback);
+```
+
+</TabItem>
+</Tabs>
+
+## Usage
+
+### `angle`
+
+The servo's actual physical angle, read from the analog feedback input and returned as a typed `Angle`.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val currentAngle = armServo.angle
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Angle currentAngle = armServo.getAngle();
+```
+
+</TabItem>
+</Tabs>

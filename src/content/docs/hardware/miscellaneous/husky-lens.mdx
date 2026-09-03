@@ -1,0 +1,128 @@
+---
+title: HuskyLens
+description: Reading blocks and arrows with NextHuskyLens
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`NextHuskyLens` is a wrapper around the [HuskyLens](https://www.gobilda.com/huskylens-ai-camera-vision-sensor-with-gobilda-case/) that initializes the device lazily from the hardware map.
+It wraps common read and setup methods.
+Anything else not wrapped is accessible through `camera`.
+
+## Creating a NextHuskyLens
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// Using your configuration name
+val huskyLens = NextHuskyLens("huskyLens")
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// Using your configuration name
+NextHuskyLens huskyLens = new NextHuskyLens("huskyLens");
+```
+
+</TabItem>
+</Tabs>
+
+## Usage
+
+### `selectAlgorithm(algorithm)`
+
+Selects the recognition algorithm.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+huskyLens.selectAlgorithm(HuskyLens.Algorithm.OBJECT_TRACKING)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+huskyLens.selectAlgorithm(HuskyLens.Algorithm.OBJECT_TRACKING);
+```
+
+</TabItem>
+</Tabs>
+
+### `blocks(id)`
+
+Returns all currently seen blocks, or only blocks with the given id, this is capped at 6.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val allBlocks = huskyLens.blocks()
+
+val blocksWithId = huskyLens.blocks(1)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+HuskyLens.Block[] allBlocks = huskyLens.blocks();
+
+HuskyLens.Block[] blocksWithId = huskyLens.blocks(1);
+```
+
+</TabItem>
+</Tabs>
+
+### `arrows(id)`
+
+Returns all currently seen arrows, or only arrows with the given id, this is capped at 6.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val allArrows = huskyLens.arrows()
+
+val arrowsWithId = huskyLens.arrows(1)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+HuskyLens.Arrow[] allArrows = huskyLens.arrows();
+
+HuskyLens.Arrow[] arrowsWithId = huskyLens.arrows(1);
+```
+
+</TabItem>
+</Tabs>
+
+### `knock()`
+
+Verifies the device is responding over I2C.
+Returns `true` if it is.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+if (huskyLens.knock()) { ... }
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+if (huskyLens.knock()) { ... }
+```
+
+</TabItem>
+</Tabs>

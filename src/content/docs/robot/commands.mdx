@@ -1,0 +1,73 @@
+---
+title: Commands
+description: How NextFTC schedules commands, and where to find the full command API.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+NextFTC v2 has no command framework of its own.
+The `robot` module uses [Ivy](https://pedropathing.com/docs/ivy),
+Pedro Pathing's command library.
+Ivy is a simple command library inpsired by WPILib and NextFTC v1,
+so if you've written WPILib commands or NextFTC v1 commands, Ivy's `Command` will look about the same.
+
+This page covers only the parts of Ivy you touch through the `robot` module.
+Sequential and parallel groups, `Command.build()`, and the rest live in
+[Ivy's documentation](https://pedropathing.com/docs/ivy).
+
+## Building commands from a mechanism
+
+Most commands come from [`Mechanism.instant`](/robot/mechanisms/) and
+[`Mechanism.infinite`](/robot/mechanisms/).
+Both call Ivy's `Commands.instant`/`Commands.infinite` and then `requiring(this)`,
+which tells the scheduler the command owns that mechanism's hardware.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class Intake : Mechanism {
+    val motor = NextMotor("intakeMotor")
+
+    fun run() = infinite { motor.throttle = 1.0 }
+    fun stop() = instant { motor.throttle = 0.0 }
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class Intake implements Mechanism {
+    NextMotor motor = new NextMotor("intakeMotor");
+
+    public Command run() { return infinite(() -> motor.setThrottle(1.0)); }
+    public Command stop() { return instant(() -> motor.setThrottle(0.0)); }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`instant` runs its action once and finishes on the same loop.
+`infinite` re-runs its action every loop and never finishes on its own,
+so something has to cancel it.
+That makes `infinite` the right choice for anything fed by gamepad input,
+where the value changes every loop.
+
+## Starting, checking, and cancelling
+
+Three `Command` methods from Ivy come up outside of triggers:
+`schedule()` hands the command to the scheduler,
+`cancel()` stops it early,
+and `isScheduled` reports whether it's running right now.
+
+NextFTC provides [`Trigger`s](/robot/triggers/), which start and stop commands based on
+gamepad input, mechanism or sensor state, or other conditions.
+
+## Learn more
+
+Sequences, parallel groups, custom commands written from scratch, and the `Scheduler` API
+are all in [Ivy's documentation](https://pedropathing.com/docs/ivy).

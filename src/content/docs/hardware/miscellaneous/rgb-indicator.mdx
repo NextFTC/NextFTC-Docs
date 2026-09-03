@@ -1,0 +1,92 @@
+---
+title: RGB Indicators
+description: Controlling the goBILDA PWM RGB Indicator Light with NextRGBIndicator
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`NextRGBIndicator` is a wrapper for the [goBILDA PWM RGB Indicator Light](https://www.gobilda.com/rgb-indicator-light-pwm-controlled/).
+The module behaves like a servo, where different PWM positions correspond to different colors and patterns.
+It extends [`NextServo`](/hardware/actuators/servos/), so everything from that class is available too.
+
+## Creating a NextRGBIndicator
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// By Lynx Module and port, recommended
+val indicator = NextRGBIndicator(RobotController.controlHub, 0)
+
+// Using your configuration name
+val indicator = NextRGBIndicator("LED")
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// By Lynx Module and port, recommended
+NextRGBIndicator indicator = new NextRGBIndicator(RobotController.controlHub(), 0);
+
+// Using your configuration name
+NextRGBIndicator indicator = new NextRGBIndicator("LED");
+```
+
+</TabItem>
+</Tabs>
+
+Both constructors accept an optional `cacheTolerance` parameter:
+
+| Parameter        | Type     | Default | Description                                                                         |
+| ---------------- | -------- | ------- | ----------------------------------------------------------------------------------- |
+| `cacheTolerance` | `Double` | `0.01`  | Minimum change in position required before a new value is written to the indicator. |
+
+## Usage
+
+### `setColor(color)`
+
+Sets the indicator to one of the predefined `Color` values: `OFF`, `RED`, `ORANGE`, `YELLOW`, `SAGE`, `GREEN`, `AZURE`, `BLUE`, `INDIGO`, `VIOLET`, `WHITE`.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+indicator.setColor(NextRGBIndicator.Color.RED)
+indicator.setColor(0.200) // for custom values
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+indicator.setColor(NextRGBIndicator.Color.RED);
+indicator.setColor(0.200); // for custom values
+
+```
+
+</TabItem>
+</Tabs>
+
+### `setBrightness(brightness)`
+
+Sets the brightness by scaling the PWM range, where `0.0` is dimmest and `1.0` is brightest.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+indicator.setBrightness(0.8)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+indicator.setBrightness(0.8);
+```
+
+</TabItem>
+</Tabs>

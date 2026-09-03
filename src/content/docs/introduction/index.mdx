@@ -1,0 +1,85 @@
+---
+title: Introduction
+description: What NextFTC is and how to get started.
+next:
+  label: Installation
+  link: /introduction/installation/
+---
+
+import { Tabs, TabItem, CardGrid, Card } from "@astrojs/starlight/components";
+
+NextFTC is a command-based library for programming FTC robots, written in Kotlin with full support for Java.
+It's designed to let you write robot code that's expressive, reusable, and easy to reason about,
+without fighting the FTC SDK.
+
+<CardGrid>
+  <a href="/control/" style="text-decoration: none; display: contents;">
+    <Card title="Control" icon="setting">
+      PID, feedforward, motion profiling, and typed geometry and units, usable
+      on their own even outside of an FTC robot.
+    </Card>
+  </a>
+  <a href="/hardware/" style="text-decoration: none; display: contents;">
+    <Card title="Hardware" icon="random">
+      Lazily-initialized, caching wrappers around motors, servos, sensors, and
+      vision hardware.
+    </Card>
+  </a>
+  <a href="/robot/" style="text-decoration: none; display: contents;">
+    <Card title="Robot" icon="puzzle">
+      `NextRobot`, `Mechanism`, and `NextOpMode` tie everything together into a
+      command-based robot.
+    </Card>
+  </a>
+</CardGrid>
+
+## Why NextFTC?
+
+Most FTC teams write robot code as a pile of `if` statements inside a `while (opModeIsActive())` loop.
+NextFTC replaces that with **mechanisms** (your subsystems, like an arm or intake) and **commands**
+(actions those subsystems can perform),
+and lets you bind them directly to gamepad input:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class Claw : Mechanism {
+    val servo = NextServo("clawServo")
+
+    fun open() = instant { servo.position = 0.2 }
+    fun close() = instant { servo.position = 0.8 }
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class Claw implements Mechanism {
+    NextServo servo = new NextServo("clawServo");
+
+    public Command open() { return instant(() -> servo.setPosition(0.2)); }
+    public Command close() { return instant(() -> servo.setPosition(0.8)); }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Ivy
+
+NextFTC uses the [Ivy library](https://pedropathing.com/docs/ivy) as its underlying commands framework.
+If you already use Ivy, using NextFTC will be easy!
+If you don't, don't worry.
+Many of the concepts translate cleanly from other command frameworks,
+including NextFTC v1.
+
+## Kotlin and Java
+
+NextFTC is written in Kotlin, but Java is treated as a first-class citizen, not an afterthought.
+Every public API is designed to read naturally from Java, and every code sample in these docs is shown in both languages.
+
+## Ready to get started?
+
+Continue to [Installation](/introduction/installation/) to add NextFTC to your robot project.

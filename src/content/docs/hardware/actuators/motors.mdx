@@ -1,0 +1,269 @@
+---
+title: Motors
+description: Control motors with NextMotor
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`NextMotor` is a lightweight wrapper around the standard FTC motor (`DcMotor` or `DcMotorEx`) that provides standard easy-to-use interface for throttling, voltage control, PIDS, and more
+
+## Creating a NextMotor
+
+There are two main ways to construct a `NextMotor`, depending on what you desire.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// By Lynx Module and port, recommended
+val intakeMotor = NextMotor(RobotController.controlHub, 0)
+
+// Using a configuration name
+val intakeMotor = NextMotor("intakeMotor")
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// By Lynx Module and port, recommended
+NextMotor intakeMotor = new NextMotor(RobotController.controlHub(), 0);
+
+// Using a configuration name
+NextMotor intakeMotor = new NextMotor("intakeMotor");
+```
+
+</TabItem>
+</Tabs>
+
+All constructors accept two optional parameters:
+
+| Parameter        | Type     | Default | Description                                                                                                                                     |
+| ---------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `anglePerCount`  | `Angle`  | 1.0 rad | The angle that a motor's shaft rotates by for every 'tick' or 'count', used to convert 'ticks' into the number of rotations the motor has spun. |
+| `cacheTolerance` | `Double` | `0.01`  | Minimum change in `throttle` required before a new value is written to the motor.                                                               |
+
+## Usage
+
+### Throttle Control
+
+Throttle Control allows the motor to be throttled from -1.0 (reverse) to 1.0 (full power).
+The value represents a fraction of the robot's total voltage.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// Adjust 1.0 to be what value you would like it to be
+myMotor.throttle = 1.0
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// Adjust 1.0 to be what value you would like it to be
+myMotor.setThrottle(1.0)
+```
+
+</TabItem>
+</Tabs>
+
+### Voltage Control
+
+Voltage Control allows the motor's power to be controlled more accurately and set to a specific voltage.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// This function takes in a 'Voltage'
+myMotor.voltage = 12.0.volts
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// This function takes in a 'Voltage'
+myMotor.setVoltage(Volts.of(12))
+```
+
+</TabItem>
+</Tabs>
+
+### Positional Control
+
+Positional control allows the motor's position to be controlled using a `PID` Controller
+
+You can change the default positional PID constants by doing:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+myMotor.positionConstants.apply {
+    kP = 0.1
+}
+// Like kP, other positional PID constants include:
+// kP, kI, kD, kS, kV, kA, kG, kCos, kCosRatio
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+myMotor.getPositionConstants()
+    .withP(0.1)
+// Like kP, other positional PID constants include:
+// kP, kI, kD, kS, kV, kA, kG, kCos, kCosRatio
+```
+
+</TabItem>
+</Tabs>
+
+#### Relative Positional Control
+
+This moves the motor to the designated position **relative** to the position of the motor during the robot's startup.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// Increase the target to be your desired angle from the initial position
+myMotor.setPositionSetpoint(90.degrees)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// Increase the target to be your desired angle from the initial position
+myMotor.setPositionSetpoint(Degrees.of(90))
+```
+
+</TabItem>
+</Tabs>
+
+#### Absolute Positional Control
+
+This makes the motor take the shortest path, regardless of rotations to an angle in the range [-180, 180] degrees.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// Increase the target to be your desired angle
+myMotor.setAbsolutePositionSetpoint(90.degrees)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// Increase the target to be your desired angle
+myMotor.setAbsolutePositionSetpoint(Degrees.of(90))
+```
+
+</TabItem>
+</Tabs>
+
+### Velocity Control
+
+Similar to [Positional Control](#positional-control) velocity control allows the motor's velocity to be controlled using a `PID` Controller
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// Increase the target to be your desired angular velocity
+myMotor.setVelocitySetpoint(30.degreesPerSecond)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// Increase the target to be your desired angular velocity
+myMotor.setVelocitySetpoint(DegreesPerSecond.of(30))
+```
+
+</TabItem>
+</Tabs>
+
+You can change the default velocity PID constants by doing:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+myMotor.velocityConstants.apply {
+    kP = 0.1
+}
+// Like kP, other velocity PID constants include:
+// kP, kI, kD, kS, kV, kA
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+myMotor.getVelocityConstants()
+    .withP(0.1)
+// Like kP, other velocity PID constants include:
+// kP, kI, kD, kS, kV, kA
+```
+
+</TabItem>
+</Tabs>
+
+### Following other motors
+
+`NextMotor`'s have a helpful feature that allows one motor to 'follow' or mimic another motor.
+
+You can use this feature by doing:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+myFollowerMotor.follow(myLeaderMotor)
+
+// Optional direction to specify whether it should follow in the same
+// or opposite direction.
+myFollowerMotor.follow(myLeaderMotor, Direction.REVERSE)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+myFollowerMotor.follow(myLeaderMotor)
+
+// Optional direction to specify whether it should follow in the same
+// or opposite direction.
+myFollowerMotor.follow(myLeaderMotor, Direction.REVERSE)
+```
+
+</TabItem>
+</Tabs>
+
+### `Direction`
+
+You can set the `Direction` property of `NextMotor`'s to control the direction that the motor rotates in.
+
+| Direction Type    | Description                                                   |
+| ----------------- | ------------------------------------------------------------- |
+| Direction.FORWARD | The motor moves forward (Clockwise)                           |
+| Direction.REVERSE | The motor spins in the opposite direction (Counter-Clockwise) |
+
+### `ZeroPowerBehaviour`
+
+The `ZeroPowerBehaviour` property allows you to control how the motor reacts when it is given a `throttle` of 0
+
+| ZeroPowerBehaviour Type  | Description                                                      |
+| ------------------------ | ---------------------------------------------------------------- |
+| ZeroPowerBehaviour.BRAKE | Actively stops the motor when given a power of 0                 |
+| ZeroPowerBehaviour.FLOAT | Allows the motor to naturally spin and eventually stop by itself |

@@ -1,0 +1,79 @@
+---
+title: Robot Project Structure
+description: How NextFTC discovers your NextRobot and OpModes, and how to organize a project around it.
+sidebar:
+  order: 7
+---
+
+import { Aside, FileTree } from "@astrojs/starlight/components";
+
+NextFTC enforces no package layout at all.
+It finds your [`NextRobot`](/robot/nextrobot/) and [`NextOpMode`](/robot/nextopmode/) classes
+by scanning the classpath at runtime, using the Sinister scanning library from Sloth,
+so where you put them in your project doesn't matter.
+What does matter is what makes a class visible to that scan.
+
+## How `NextRobot` is discovered
+
+NextFTC looks for a class implementing `NextRobot` that is:
+
+- `public`,
+- not abstract,
+- not annotated `@Disabled`, and
+- either has a public no-arg constructor or, in Kotlin, is a singleton `object`.
+
+We recommend the no-arg constructor.
+It works identically in Kotlin and Java.
+
+Exactly one class should qualify.
+If none does, or if two do, NextFTC throws on startup with a message saying which case it hit,
+instead of picking one at random.
+
+## How `NextOpMode`s are discovered
+
+NextFTC registers every `public`, non-abstract, non-`@Disabled` subclass of `NextOpMode` that carries
+`@NextTeleop`, `@NextAutonomous`, or `@NextUtility`.
+You never call an SDK registration method.
+
+To build the OpMode, NextFTC looks for two constructors in order:
+
+1. One that takes a single parameter of your `NextRobot` type, or a supertype of it.
+   NextFTC passes the robot instance in.
+2. Failing that, a public no-arg constructor.
+
+That first rule is why the usual OpMode looks like this:
+
+```kotlin
+class MyTeleop(robot: MyRobot) : NextOpMode(robot)
+```
+
+## Suggested layout
+
+None of this is required, so organize the code however your team likes.
+This is the one we use, and it holds up once you have a dozen OpModes:
+
+<FileTree>
+
+- org.firstinspires.ftc.teamcode
+  - Robot.java
+  - mechanisms
+    - Arm.java
+    - Intake.java
+  - opmodes
+    - auto
+      - CloseAuto.java
+      - FarAuto.java
+    - teleop
+      - OneDriverTeleop.java
+
+</FileTree>
+
+<Aside type="tip">
+  Discovery keys off interfaces and annotations, never file location. Move a
+  package mid-season and nothing breaks.
+</Aside>
+
+## See also
+
+- [`NextRobot`](/robot/nextrobot/) for declaring your robot and its mechanisms.
+- [`NextOpMode`](/robot/nextopmode/) for writing OpModes and for what the registration annotations accept.

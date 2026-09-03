@@ -1,0 +1,91 @@
+---
+title: Continuous-Rotation Servos
+description: Controlling continuous-rotation servos with NextCRServo
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`NextCRServo` is a lightweight wrapper around a continuous-rotation FTC servo (`CRServoImplEx`) that gives you a more user-friendly interface for controlling power and direction.
+
+## Creating a NextCRServo
+
+There are two ways to construct a `NextCRServo`, depending on what you desire.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// By Lynx Module and port, recommended
+val intakeServo = NextCRServo(RobotController.controlHub, 0)
+
+// Using a configuration name
+val intakeServo = NextCRServo("intakeServo")
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// By Lynx Module and port, recommended
+NextCRServo intakeServo = new NextCRServo(RobotController.controlHub(), 0);
+
+// Using a configuration name
+NextCRServo intakeServo = new NextCRServo("intakeServo");
+```
+
+</TabItem>
+</Tabs>
+
+Both constructors accept an optional `cacheTolerance` parameter:
+
+| Parameter        | Type     | Default | Description                                                                    |
+| ---------------- | -------- | ------- | ------------------------------------------------------------------------------ |
+| `cacheTolerance` | `Double` | `0.01`  | Minimum change in `power` required before a new value is written to the servo. |
+
+## Usage
+
+### `power`
+
+`NextCRServo` has a powerable property in the range `[-1.0, 1.0]` as a `Double`.
+This is what will set your servo to actually move.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+intakeServo.power = 0.75
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+intakeServo.setPower(0.75);
+```
+
+</TabItem>
+</Tabs>
+
+### `reverse()`
+
+Sets the servo's direction to `NextMotor.Direction.REVERSE`, causing positive `power` values to spin the servo the opposite way.
+Returns the servo itself, so it can be chained off the constructor.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val intakeServo = NextCRServo("intakeServo").reverse()
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+NextCRServo intakeServo = new NextCRServo("intakeServo").reverse();
+```
+
+</TabItem>
+</Tabs>

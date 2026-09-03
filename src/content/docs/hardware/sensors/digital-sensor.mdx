@@ -1,0 +1,115 @@
+---
+title: Digital Sensors
+description: Reading digital sensors with NextDigitalSensor
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`NextDigitalSensor` is a lightweight wrapper around a `DigitalChannel` for reading digital sensors like limit switches, magnetic switches, and beam breaks.
+
+Most digital sensors are active low, meaning they read `false` when triggered (switch pressed, magnet present, beam broken) and `true` when idle.
+This wrapper handles that inversion for you, so `isTriggered` always means what you'd expect.
+
+## Creating a NextDigitalSensor
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// By Lynx Module and port, recommended
+val beamBreak = NextDigitalSensor(RobotController.controlHub, 0)
+
+// Using your configuration name
+val beamBreak = NextDigitalSensor("beamBreak")
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// By Lynx Module and port, recommended
+NextDigitalSensor beamBreak = new NextDigitalSensor(RobotController.controlHub(), 0);
+
+// Using your configuration name
+NextDigitalSensor beamBreak = new NextDigitalSensor("beamBreak");
+```
+
+</TabItem>
+</Tabs>
+
+Both constructors accept an optional `inverted` parameter:
+
+| Parameter  | Type      | Default | Description                                                          |
+| ---------- | --------- | ------- | -------------------------------------------------------------------- |
+| `inverted` | `Boolean` | `true`  | If true, `isTriggered` returns the opposite of the raw sensor state. |
+
+## Usage
+
+### `isTriggered`
+
+`Boolean`, this is true if the sensor is currently triggered, while accounting for `inverted`.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+if (beamBreak.isTriggered) {
+    //...
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+if (beamBreak.isTriggered()) {
+    //...
+}
+```
+
+</TabItem>
+</Tabs>
+
+### `rawState`
+
+`Boolean`, the raw state of the digital channel).
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val raw = beamBreak.rawState
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+boolean raw = beamBreak.getRawState();
+```
+
+</TabItem>
+</Tabs>
+
+### `debug()`
+
+Returns a string of the sensor's current state, useful for telemetry or logging.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+telemetry.addLine(beamBreak.debug())
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+telemetry.addLine(beamBreak.debug());
+```
+
+</TabItem>
+</Tabs>

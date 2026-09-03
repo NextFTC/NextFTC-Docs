@@ -1,0 +1,137 @@
+---
+title: Limelights
+description: Reading AprilTags and pose data with NextLimelight
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`NextLimelight` is a wrapper around the [Limelight3A](https://limelightvision.io/products/limelight-3a) that initializes the device lazily from the hardware map,
+while creating many useful methods.
+Any data that is not wrapped can be accessed through `camera`.
+
+## Creating a NextLimelight
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// Using your configuration name
+val limelight = NextLimelight("limelight")
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// Using your configuration name
+NextLimelight limelight = new NextLimelight("limelight");
+```
+
+</TabItem>
+</Tabs>
+
+## Usage
+
+### `startReading(pipeline, hz)`
+
+Sets the poll rate and pipeline, then starts polling, all in one call.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+limelight.startReading(pipeline = 0, hz = 100)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+limelight.startReading(0, 100);
+```
+
+</TabItem>
+</Tabs>
+
+### `getDistance(unit, id)`
+
+Returns the straight-line distance (hypotenuse) from the robot to the AprilTag for the matching `id` (or any visible tag if `id` is `null`), in the given unit or `null` if no valid tag is available.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val distance = limelight.getDistance(id = 7) //Defaults to Inches
+if (distance != null) {
+    // ...
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Distance distance = limelight.getDistance(Inches.INSTANCE, 7); //Defaults to Inches
+if (distance != null) {
+    // ...
+}
+```
+
+</TabItem>
+</Tabs>
+
+### `getPose()`
+
+Returns the robot's field position in [FTC coordinates](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html), or `null` if no valid pose is available.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val pose = limelight.getPose()
+if (pose != null) {
+    // ...
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Pose2d pose = limelight.getPose();
+if (pose != null) {
+    // ...
+}
+```
+
+</TabItem>
+</Tabs>
+
+### `getPedroPose()`
+
+Returns the robot's field position in [Pedro coordinates](https://pedropathing.com/docs/pathing/reference/coordinates), or `null` if no valid pose is available.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val pose = limelight.getPedroPose()
+if (pose != null) {
+    // ...
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Pose2d pose = limelight.getPedroPose();
+if (pose != null) {
+    // ...
+}
+```
+
+</TabItem>
+</Tabs>

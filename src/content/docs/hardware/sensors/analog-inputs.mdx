@@ -1,0 +1,90 @@
+---
+title: Analog Inputs
+description: Reading raw and normalized voltage with NextAnalogInput
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`NextAnalogInput` is a wrapper around an analog input that gives you convenient access to different readings.
+
+It inherits from `AnalogFeedback`, so any `NextAnalogInput` can also be passed directly as the feedback source for a [feedback servo](/hardware/actuators/feedback-servos).
+
+## Creating a NextAnalogInput
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// By Lynx Module and channel, recommended
+val input = NextAnalogInput(RobotController.controlHub, 0)
+
+// Using your configuration name
+val input = NextAnalogInput("armEncoder")
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// By Lynx Module and channel, recommended
+NextAnalogInput input = new NextAnalogInput(RobotController.controlHub(), 0);
+
+// Using your configuration name
+NextAnalogInput input = new NextAnalogInput("armEncoder");
+```
+
+</TabItem>
+</Tabs>
+
+Both constructors accept two optional parameters:
+
+| Parameter              | Type                 | Default         | Description                                                         |
+| ---------------------- | -------------------- | --------------- | ------------------------------------------------------------------- |
+| `customTransformation` | `(Double) -> Double` | Value Unchanged | An optional transformation applied to the normalized voltage ratio. |
+| `maxVoltage`           | `Voltage`            | `3.3.volts`     | The voltage that corresponds to a normalized value of `1.0`.        |
+
+## Usage
+
+### `rawVoltage`
+
+`Voltage` this is the raw, untransformed voltage currently read from the analog input.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val voltage = input.rawVoltage
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Voltage voltage = input.getRawVoltage();
+```
+
+</TabItem>
+</Tabs>
+
+### `value`
+
+`Double` the normalized reading, starting as `rawVoltage` then divided by your `maxVoltage` and passed through your `customTransformation`.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val normalized = input.value
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+double normalized = input.getValue();
+```
+
+</TabItem>
+</Tabs>

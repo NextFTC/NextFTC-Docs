@@ -1,0 +1,70 @@
+---
+title: Hardware Module
+description: Typed, lazy-initialized wrappers around FTC SDK hardware.
+---
+
+import {
+  Tabs,
+  TabItem,
+  CardGrid,
+  LinkCard,
+} from "@astrojs/starlight/components";
+
+The `hardware` module wraps the raw FTC SDK hardware classes (`DcMotorEx`, `Servo`, `IMU`, and so on)
+in classes that lazily resolve devices from the hardware map on first use,
+and give you a more convenient, consistent API across every device type.
+
+## Creating hardware
+
+Every device wrapper in this module can be constructed the same two ways: by its Lynx Module and port,
+or by its configuration name from the Driver Station.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// By Lynx Module and port, recommended
+val servo = NextServo(RobotController.controlHub, 0)
+
+// Using your configuration name
+val servo = NextServo("armServo")
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// By Lynx Module and port, recommended
+NextServo servo = new NextServo(RobotController.controlHub(), 0);
+
+// Using your configuration name
+NextServo servo = new NextServo("armServo");
+```
+
+</TabItem>
+</Tabs>
+
+Constructing by Lynx Module and port is recommended,
+since it skips the hardware map's name lookup and lets NextFTC talk to the module directly.
+Either way, the underlying device isn't actually resolved until you first use it,
+so it's always safe to declare hardware as fields on your `Mechanism`.
+
+## What's in this module
+
+<CardGrid>
+  <LinkCard
+    title="Actuators"
+    href="/hardware/actuators/motors/"
+    description="Motors, servos, continuous-rotation servos, and feedback servos."
+  />
+  <LinkCard
+    title="Sensors"
+    href="/hardware/sensors/color-sensor/"
+    description="IMUs, Pinpoints, color/distance/digital sensors, and analog inputs."
+  />
+  <LinkCard
+    title="Miscellaneous"
+    href="/hardware/miscellaneous/limelights/"
+    description="Limelights, HuskyLens, and RGB indicators."
+  />
+</CardGrid>

@@ -1,0 +1,60 @@
+---
+title: NextFTC
+description: The modern FTC library for Kotlin and Java.
+template: splash
+hero:
+  tagline: A powerful, ergonomic library for FTC robots, built around commands, triggers, and zero boilerplate.
+  image:
+    dark: ./../../assets/logo-dark.svg
+    light: ./../../assets/logo-light.svg
+    alt: NextFTC Logo
+  actions:
+    - text: Get Started
+      link: /introduction/
+      icon: right-arrow
+    - text: API Documentation
+      link: https://kdoc.nextftc.dev/
+      icon: external
+      variant: minimal
+    - text: View on GitHub
+      link: https://github.com/NextFTC/NextFTCSuite
+      icon: external
+      variant: minimal
+---
+
+import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+
+## What's in NextFTC v2?
+
+<CardGrid>
+  <LinkCard
+    title="Command-Based Architecture"
+    description="Build robots around composable commands and reactive triggers. Bind gamepad inputs to commands with a single line of code."
+    href="/robot/commands/"
+  />
+  <LinkCard
+    title="Zero Registration Boilerplate"
+    description="Annotate your OpModes with @NextTeleop or @NextAutonomous and inject your Robot instances at start time."
+    href="/robot/nextopmode/"
+  />
+  <LinkCard
+    title="Type-Safe Hardware"
+    description="Wrap motors, servos, sensors, and vision hardware with lazy-initialized, caching wrappers that reduce unnecessary hardware writes."
+    href="/hardware/"
+  />
+  <LinkCard
+    title="Built-In Control Theory"
+    description="PID, feedforward, motion profiling, Kalman filtering, and type-safe units: everything you need to close the loop on any mechanism."
+    href="/control/"
+  />
+  <LinkCard
+    title="Type-Safe Units"
+    description="Write 5.0.meters or 12.0.volts instead of bare doubles. Arithmetic between units produces correctly typed results, caught at compile time."
+    href="/control/#units"
+  />
+  <LinkCard
+    title="Kotlin & Java"
+    description="Written in Kotlin with Java interop as a first-class citizen, so your team can use either language across the same codebase."
+    href="/introduction/installation/"
+  />
+</CardGrid>

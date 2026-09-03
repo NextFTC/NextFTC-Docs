@@ -1,0 +1,101 @@
+---
+title: Servos
+description: Controlling standard servos with NextServo
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`NextServo` is a lightweight wrapper around a standard FTC servo (`ServoImplEx`) that gives you a more user-friendly interface for controlling position and PWM range.
+
+## Creating a NextServo
+
+There are two main ways to construct a `NextServo`, depending on what you desire.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+ // By Lynx Module and port, recommended
+val armServo = NextServo(RobotController.controlHub, 0)
+
+// Using a configuration name
+val armServo = NextServo("armServo")
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+ // By Lynx Module and port, recommended
+NextServo armServo = new NextServo(RobotController.controlHub(), 0);
+
+// Using a configuration name
+NextServo armServo = new NextServo("armServo");
+```
+
+</TabItem>
+</Tabs>
+
+All constructors accept two optional parameters:
+
+| Parameter        | Type                  | Default   | Description                                                                       |
+| ---------------- | --------------------- | --------- | --------------------------------------------------------------------------------- |
+| `cacheTolerance` | `Double`              | `0.01`    | Minimum change in `position` required before a new value is written to the servo. |
+| `direction`      | `NextMotor.Direction` | `FORWARD` | Initial direction of the servo.                                                   |
+
+## Usage
+
+### `position`
+
+`NextServo` has a positionable property in the range `[0.0, 1.0]` as a `Double`.
+This is what will set your servo to actually move.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+armServo.position = 0.5
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+armServo.setPosition(0.5);
+```
+
+</TabItem>
+</Tabs>
+
+### `pwmRange`
+
+`PwmControl.PwmRange` is the servo's PWM range configuration.
+Get or set directly, or use [`setPwmRange`](#setpwmrangelower-upper) for a more convenient two-argument setter.
+
+#### `setPwmRange(lower, upper)`
+
+Sets the PWM range of the servo.
+
+| Parameter | Type     | Description                                    |
+| --------- | -------- | ---------------------------------------------- |
+| `lower`   | `Double` | Lower bound of the PWM range, in microseconds. |
+| `upper`   | `Double` | Upper bound of the PWM range, in microseconds. |
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+armServo.setPwmRange(500.0, 2500.0)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+armServo.setPwmRange(500.0, 2500.0);
+```
+
+</TabItem>
+</Tabs>

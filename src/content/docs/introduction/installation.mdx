@@ -1,0 +1,46 @@
+---
+title: Installation
+description: How to install NextFTC libraries.
+prev:
+  label: Introduction
+  link: /introduction/
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+<Aside type='danger'>
+    Installing NextFTC v2 in a project that already has NextFTC v1 will work,
+    but run into errors at build-time, as the libraries contain classes with the same name.
+
+    It is recommended to remove NextFTC v1 from your project and follow the migration guide (coming soon).
+
+</Aside>
+
+To install NextFTC in an FTC robot project, open `TeamCode/build.gradle`,
+and add the following to your `dependencies` block:
+
+```groovy
+implementation 'dev.nextftc.v2:control:VERSION'
+implementation 'dev.nextftc.v2:hardware:VERSION'
+implementation 'dev.nextftc.v2:robot:VERSION'
+```
+
+<Aside type="tip" title="">
+  Replace the `VERSION` with the latest version from Maven Central (omitting the
+  `v` prefix):
+  <img
+    alt="Maven Central Version"
+    src="https://img.shields.io/maven-central/v/dev.nextftc.v2/robot?strategy=highestVersion&style=flat&label=%20Version&labelColor=0c1014&color=0099ff"
+  />
+</Aside>
+
+Note that the control and hardware modules can be used on their own.
+
+If you are using the hardware and/or robot modules,
+add the following to the `repositories` block to allow Gradle to find the necessary dependencies.
+
+```groovy
+maven {
+    url 'https://repo.dairy.foundation/releases'
+}
+```
