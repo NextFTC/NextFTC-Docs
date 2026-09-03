@@ -23,7 +23,7 @@ jobs:
 
   deploy:
     needs: build
-    if: github.ref == 'refs/heads/main' && github.repository == 'nextftc/nextftc-docs-beta'
+    if: github.ref == 'refs/heads/main' && github.repository == 'nextftc/nextftc-docs'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

@@ -7,7 +7,7 @@ import starlightLinksValidator from "starlight-links-validator";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://beta.nextftc.dev",
+  site: "https://nextftc.dev",
   fonts: [
     {
       provider: fontProviders.google(),

@@ -3,7 +3,7 @@
 [![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
 
 Documentation site for **NextFTC v2**, built with [Astro](https://astro.build) and [Starlight](https://starlight.astro.build).
-Deployed to [beta.nextftc.dev](https://beta.nextftc.dev).
+Deployed to [nextftc.dev](https://nextftc.dev).
 
 ## 🚀 Project Structure
 
