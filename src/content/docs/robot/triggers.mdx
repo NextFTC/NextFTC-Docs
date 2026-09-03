@@ -7,28 +7,46 @@ sidebar:
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 
-Instead of polling `gamepad1.a` in a loop and manually deciding when to start or stop a command,
-NextFTC lets you bind gamepad input directly to commands using `Trigger` and `RangeTrigger`.
-Once bound,
-these are polled automatically every loop, so no manual wiring is required beyond the binding itself.
+Checking `gamepad1.a` yourself means tracking last loop's value to catch the press,
+then deciding when to schedule and when to cancel.
+Triggers do that bookkeeping.
+Bind a command once, and NextFTC polls the condition and schedules or cancels for you every loop.
 
-The examples below use a `driver` object of type `CommandGamepad`,
-which wraps a gamepad and exposes each of its buttons and sticks as a `Trigger` or `RangeTrigger`.
-See that page for how to construct one.
+The examples use a `driver` of type `CommandGamepad`,
+which wraps an FTC `Gamepad` and exposes every button as a `Trigger` and every stick and analog
+trigger as a `RangeTrigger`.
+Build one in your OpMode's `start()`:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val driver = CommandGamepad(gamepad1)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+CommandGamepad driver = new CommandGamepad(gamepad1);
+```
+
+</TabItem>
+</Tabs>
 
 ## `Trigger`
 
-A `Trigger` wraps a boolean condition and lets you bind commands to how that condition changes over time:
+A `Trigger` is a boolean condition plus the methods that bind a command to how that condition changes:
 
-| Method          | Starts the command when...                              | Also stops/cancels it      |
-| --------------- | ------------------------------------------------------- | -------------------------- |
-| `onTrue`        | condition goes false → true                             | —                          |
-| `onFalse`       | condition goes true → false                             | —                          |
-| `onChange`      | condition changes at all                                | —                          |
-| `whileTrue`     | condition goes false → true                             | when it goes back to false |
-| `whileFalse`    | condition goes true → false                             | when it goes back to true  |
-| `toggleOnTrue`  | condition goes false → true (toggles running/cancelled) | —                          |
-| `toggleOnFalse` | condition goes true → false (toggles running/cancelled) | —                          |
+| Method          | Schedules the command when...                              | Cancels it when...      |
+| --------------- | ---------------------------------------------------------- | ----------------------- |
+| `onTrue`        | condition goes false to true                               | never                   |
+| `onFalse`       | condition goes true to false                               | never                   |
+| `onChange`      | condition changes in either direction                      | never                   |
+| `whileTrue`     | condition goes false to true                               | it goes back to false   |
+| `whileFalse`    | condition goes true to false                               | it goes back to true    |
+| `toggleOnTrue`  | condition goes false to true and the command isn't running | the same edge, if it is |
+| `toggleOnFalse` | condition goes true to false and the command isn't running | the same edge, if it is |
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
@@ -49,8 +67,13 @@ driver.b().whileTrue(intake.run());
 </TabItem>
 </Tabs>
 
-Triggers can be composed with `and`, `or`, and `negate`,
-and refined with `debounce(seconds)` (ignore brief flickers) and `multiPress(requiredPresses, windowTime)` (e.g. double-press detection):
+Every one of these returns the trigger, so you can bind more than one command to the same button.
+
+Combine triggers with `and`, `or`, and `negate`.
+`debounce(seconds)` requires the condition to hold that long before it counts, which filters
+out a flaky switch or a bumped button.
+`multiPress(requiredPresses, windowTime)` waits for that many presses inside the window,
+so `multiPress(2, 0.5)` is a double-press.
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
@@ -71,8 +94,8 @@ driver.a().and(driver.rightBumper()).onTrue(climb.start());
 
 ## `RangeTrigger`
 
-A `RangeTrigger` wraps an analog value (a stick axis or an analog trigger) and lets you derive a `Trigger` from a threshold or range,
-in addition to reading the raw value directly:
+A `RangeTrigger` holds an analog value, either a stick axis or an analog trigger.
+Read `value` for the raw number, or turn a threshold into a `Trigger`:
 
 | Method                    | Active when...                    |
 | ------------------------- | --------------------------------- |
@@ -101,5 +124,6 @@ double rawValue = driver.leftStickY().getValue();
 </TabItem>
 </Tabs>
 
-The result of `isOver`/`isUnder`/`isBetween` is a regular `Trigger`,
-so all of the `Trigger` binding methods above are available on it too.
+`isOver`, `isUnder`, and `isBetween` all return an ordinary `Trigger`,
+so every binding method in the table above works on the result,
+along with `and`, `or`, `debounce`, and the rest.

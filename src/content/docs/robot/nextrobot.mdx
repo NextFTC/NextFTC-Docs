@@ -1,16 +1,15 @@
 ---
 title: NextRobot
-description: The root of your robot, auto-discovered and shared across every OpMode.
+description: The one class that lists your mechanisms. NextFTC finds it and hands it to every OpMode.
 sidebar:
   order: 3
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 
-`NextRobot` is the root of your robot.
-It's where you declare the [mechanisms](/robot/mechanisms/) that make up your robot,
-and it's automatically discovered and shared across every one of your [`NextOpMode`](/robot/nextopmode/)s,
-so you never construct or register it yourself.
+Your `NextRobot` implementation lists the [mechanisms](/robot/mechanisms/) on your robot.
+Write one, and every [`NextOpMode`](/robot/nextopmode/) gets the same instance of it.
+You never call its constructor and you never register it anywhere.
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
@@ -37,9 +36,9 @@ public interface NextRobot {
 
 ## `mechanisms`
 
-The set of [`Mechanism`](/robot/mechanisms/)s that make up your robot.
-Every loop,
-NextFTC calls `periodic()` on each mechanism in this set for you.
+Every [`Mechanism`](/robot/mechanisms/) on your robot.
+NextFTC calls `periodic()` on each one every loop, and schedules each one's default command at start.
+A mechanism left out of this set gets neither.
 
 ## `periodic()`
 
@@ -80,8 +79,9 @@ public class MyRobot implements NextRobot {
 
 ## Discovery
 
-You don't construct your `NextRobot` yourself,
-and you don't register it anywhere — NextFTC finds it for you.
-Give your implementing class a public no-arg constructor (the recommended approach in both Kotlin and Java) and it will be discovered automatically and made available to your `NextOpMode`s.
-Exactly one `NextRobot` implementation should exist in your project.
-See [NextFTC robot project structure](/robot/project-structure/) for the full details of how this discovery works.
+NextFTC scans the classpath at runtime to find your `NextRobot`.
+Give your class a public no-arg constructor, which is what we recommend in both Kotlin and Java,
+and it gets picked up and passed to your `NextOpMode`s.
+Write exactly one implementation.
+Zero or two or more, and NextFTC throws instead of guessing which one you meant.
+See [robot project structure](/robot/project-structure/) for the rest of the rules.
