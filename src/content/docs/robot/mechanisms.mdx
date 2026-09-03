@@ -20,6 +20,7 @@ interface Mechanism {
     val defaultCommand: Command get() = infinite {}
     fun instant(action: Runnable): CommandBuilder
     fun infinite(action: Runnable): CommandBuilder
+    fun coroutine(body: suspend CommandScope.() -> Unit): CoroutineCommandBuilder
 }
 ```
 
@@ -51,6 +52,10 @@ so the scheduler knows the command owns this mechanism.
 Two commands can never drive the same hardware at the same time.
 `instant` runs its action once.
 `infinite` re-runs its action every loop until something cancels it.
+
+Kotlin has a third: `coroutine { }` builds a
+[coroutine command](/robot/advanced/coroutine-commands/) requiring this mechanism,
+for anything with steps in it.
 
 ## `defaultCommand`
 

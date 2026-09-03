@@ -60,7 +60,20 @@ export default defineConfig({
             label: "Robot Module",
             link: "/robot/",
             icon: "puzzle",
-            items: [{ autogenerate: { directory: "robot" } }],
+            items: [
+              { slug: "robot" },
+              { slug: "robot/commands" },
+              { slug: "robot/mechanisms" },
+              { slug: "robot/nextrobot" },
+              { slug: "robot/nextopmode" },
+              { slug: "robot/triggers" },
+              { slug: "robot/drive-commands" },
+              { slug: "robot/project-structure" },
+              {
+                label: "Advanced",
+                items: [{ autogenerate: { directory: "robot/advanced" } }],
+              },
+            ],
           },
           {
             label: "Hardware Module",
