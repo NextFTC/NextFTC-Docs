@@ -43,7 +43,13 @@ All commands are run from the root of the project, from a terminal:
 
 ## Deployment
 
-Pushes to `main` are built and deployed to GitHub Pages automatically via `.github/workflows/deploy.yaml`.
+The site is hosted on [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/) as a static assets Worker, configured in `wrangler.jsonc`.
+
+- **Production:** pushes to `main` are built and deployed by [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/), Cloudflare's git integration.
+  This is configured in the Cloudflare dashboard, not in this repo.
+- **Previews:** `.github/workflows/build.yaml` builds every PR with `withastro/action`, which uploads `dist/` as an artifact.
+  `.github/workflows/preview.yaml` then picks that artifact up, runs `wrangler versions upload --preview-alias pr-<number>`, and comments the preview URL on the PR.
+  It needs the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets.
 
 ## 👀 Want to learn more?
 
