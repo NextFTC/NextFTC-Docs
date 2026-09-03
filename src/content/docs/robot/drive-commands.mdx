@@ -1,0 +1,272 @@
+---
+title: Drive Commands
+description: Driving a mecanum or differential drivetrain from a gamepad.
+sidebar:
+  order: 6
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`DriveCommands` holds the drive math for a mecanum or differential drivetrain,
+so you don't write another normalized-power denominator by hand.
+Each function returns an [Ivy](/robot/commands/) command that reads the gamepad
+and writes wheel powers every loop, and each one runs until something cancels it.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+var scalar: Double
+
+fun mecanumDrive(
+    frontLeft: NextMotor, frontRight: NextMotor, backLeft: NextMotor, backRight: NextMotor,
+    gamepad: Gamepad,
+    kinematics: MecanumKinematics = MecanumKinematics(),
+): Command
+
+fun mecanumDriveFieldCentric(
+    frontLeft: NextMotor, frontRight: NextMotor, backLeft: NextMotor, backRight: NextMotor,
+    gamepad: Gamepad,
+    heading: Supplier<Double>,
+    kinematics: MecanumKinematics = MecanumKinematics(),
+): Command
+
+fun arcadeDrive(
+    frontLeft: NextMotor, frontRight: NextMotor, backLeft: NextMotor, backRight: NextMotor,
+    gamepad: Gamepad,
+    kinematics: TankKinematics = TankKinematics(),
+): Command
+
+fun tankDrive(
+    frontLeft: NextMotor, frontRight: NextMotor, backLeft: NextMotor, backRight: NextMotor,
+    gamepad: Gamepad,
+): Command
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public final class DriveCommands {
+    public static void setScalar(double scalar);
+    public static double getScalar();
+
+    public static Command mecanumDrive(NextMotor frontLeft, NextMotor frontRight,
+        NextMotor backLeft, NextMotor backRight, Gamepad gamepad);
+    public static Command mecanumDrive(NextMotor frontLeft, NextMotor frontRight,
+        NextMotor backLeft, NextMotor backRight, Gamepad gamepad, MecanumKinematics kinematics);
+
+    public static Command mecanumDriveFieldCentric(NextMotor frontLeft, NextMotor frontRight,
+        NextMotor backLeft, NextMotor backRight, Gamepad gamepad, Supplier<Double> heading);
+    public static Command mecanumDriveFieldCentric(NextMotor frontLeft, NextMotor frontRight,
+        NextMotor backLeft, NextMotor backRight, Gamepad gamepad, Supplier<Double> heading,
+        MecanumKinematics kinematics);
+
+    public static Command arcadeDrive(NextMotor frontLeft, NextMotor frontRight,
+        NextMotor backLeft, NextMotor backRight, Gamepad gamepad);
+    public static Command arcadeDrive(NextMotor frontLeft, NextMotor frontRight,
+        NextMotor backLeft, NextMotor backRight, Gamepad gamepad, TankKinematics kinematics);
+
+    public static Command tankDrive(NextMotor frontLeft, NextMotor frontRight,
+        NextMotor backLeft, NextMotor backRight, Gamepad gamepad);
+}
+```
+
+</TabItem>
+</Tabs>
+
+:::note
+Mecanum and differential (tank) are the only drivetrains covered.
+If you write the math for another one, send it our way.
+:::
+
+## `mecanumDrive`
+
+The left stick drives and strafes, the right stick turns.
+Powers are normalized, so a full diagonal plus a full turn stays within motor range
+instead of clipping.
+
+The optional `MecanumKinematics` multiplies strafe input by 1.1 by default,
+which makes up for how much worse mecanum wheels are sideways than forward.
+Pass `MecanumKinematics(1.2)` if your robot still strafes short of where you point it.
+
+## `mecanumDriveFieldCentric`
+
+Same controls, except stick input is rotated by the robot's heading first,
+so pushing the stick away from you moves the robot away from you no matter which way it faces.
+
+The extra `heading` argument supplies the current heading in radians.
+Pedro Pathing's follower pose works, and so does an IMU reading,
+as long as it's zeroed to the robot's starting orientation on the field.
+Get that zero wrong and every direction is wrong.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+mecanumDriveFieldCentric(
+    drivetrain.frontLeft,
+    drivetrain.frontRight,
+    drivetrain.backLeft,
+    drivetrain.backRight,
+    gamepad1,
+    { follower.pose.heading },
+).schedule()
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+DriveCommands.mecanumDriveFieldCentric(
+    drivetrain.frontLeft,
+    drivetrain.frontRight,
+    drivetrain.backLeft,
+    drivetrain.backRight,
+    gamepad1,
+    () -> follower.getPose().getHeading()
+).schedule();
+```
+
+</TabItem>
+</Tabs>
+
+## `tankDrive` and `arcadeDrive`
+
+Two control schemes for the same differential drivetrain.
+`tankDrive` gives the left stick the left wheels and the right stick the right wheels.
+`arcadeDrive` drives with the left stick and turns with the right.
+Both take the same four motors and gamepad as the mecanum functions.
+
+## `scalar`
+
+Every drive function multiplies its gamepad input by `scalar`, which starts at 1.0.
+It's read fresh each loop, so a change takes effect on the next one.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+scalar = 0.5 // half speed
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+DriveCommands.setScalar(0.5); // half speed
+```
+
+</TabItem>
+</Tabs>
+
+Slow mode is the usual reason to touch it.
+Bind an infinite command that lowers the scalar on start and puts it back when cancelled,
+then hold the bumper to creep:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+driver.leftBumper.whileTrue(
+    Commands.infinite { scalar = 0.4 }.setEnd { scalar = 1.0 },
+)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+driver.leftBumper().whileTrue(
+    Commands.infinite(() -> DriveCommands.setScalar(0.4))
+        .setEnd(end -> DriveCommands.setScalar(1.0))
+);
+```
+
+</TabItem>
+</Tabs>
+
+Use `instant` instead of `infinite` here and the scalar never goes back up.
+
+## Example: a drivetrain mechanism
+
+Put the four motors on a [`Mechanism`](/robot/mechanisms/) and give it a method that schedules the
+drive command:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class Drivetrain : Mechanism {
+    val frontLeft = NextMotor("frontLeft")
+    val frontRight = NextMotor("frontRight")
+    val backLeft = NextMotor("backLeft")
+    val backRight = NextMotor("backRight")
+
+    fun startDrive(gamepad: Gamepad) {
+        mecanumDrive(frontLeft, frontRight, backLeft, backRight, gamepad).schedule()
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class Drivetrain implements Mechanism {
+    public final NextMotor frontLeft = new NextMotor("frontLeft");
+    public final NextMotor frontRight = new NextMotor("frontRight");
+    public final NextMotor backLeft = new NextMotor("backLeft");
+    public final NextMotor backRight = new NextMotor("backRight");
+
+    public void startDrive(Gamepad gamepad) {
+        DriveCommands.mecanumDrive(frontLeft, frontRight, backLeft, backRight, gamepad).schedule();
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+Reverse whichever motors need it with each motor's
+[`direction`](/hardware/actuators/motors/) property rather than negating powers yourself,
+and add the mechanism to your [`NextRobot`](/robot/nextrobot/)'s `mechanisms` set like any other.
+
+## Example: driving from a TeleOp
+
+Schedule the command once. It's infinite, so it keeps reading the gamepad until the OpMode ends:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+@NextTeleop
+class MyTeleop(val robot: MyRobot) : NextOpMode(robot) {
+    override fun start() {
+        robot.drivetrain.startDrive(gamepad1)
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+@NextTeleop
+public class MyTeleop extends NextOpMode {
+    private final MyRobot robot;
+
+    public MyTeleop(MyRobot robot) {
+        super(robot);
+        this.robot = robot;
+    }
+
+    @Override
+    public void start() {
+        robot.drivetrain.startDrive(gamepad1);
+    }
+}
+```
+
+</TabItem>
+</Tabs>

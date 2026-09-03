@@ -1,32 +1,31 @@
 ---
 title: Robot Module
-description: NextRobot, OpModes, Mechanisms, Triggers, and the rest of the robot module.
+description: NextRobot, OpModes, mechanisms, triggers, and the rest of the robot module.
 sidebar:
   order: 0
 ---
 
 import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 
-The `robot` module is where everything comes together:
-your robot, your subsystems, your OpModes, and your gamepad bindings.
-It builds on top of `hardware` and `control`, and provides the command-based scheduling
-layer (via [PedroPathing Ivy](https://pedropathing.com/docs/ivy)) that ties them all to your gamepad.
+The `robot` module holds your robot class, your mechanisms, your OpModes, and your gamepad bindings.
+It builds on `hardware` and `control`, and it runs your code through the command scheduler from
+[Pedro Pathing's Ivy](https://pedropathing.com/docs/ivy).
 
 <CardGrid>
   <LinkCard
     title="Mechanisms"
     href="/robot/mechanisms/"
-    description="Grouping hardware and behavior into reusable subsystems."
+    description="One subsystem: the hardware it owns and the commands that move it."
   />
   <LinkCard
     title="NextRobot"
     href="/robot/nextrobot/"
-    description="The root of your robot, auto-discovered and shared across every OpMode."
+    description="The one class that lists your mechanisms. NextFTC finds it and hands it to every OpMode."
   />
   <LinkCard
     title="NextOpMode"
     href="/robot/nextopmode/"
-    description="The base class for your OpModes, with the gamepad, telemetry, and hardware map ready to go."
+    description="The base class for your OpModes. Gamepads, telemetry, and the hardware map are already fields."
   />
   <LinkCard
     title="Project Structure"

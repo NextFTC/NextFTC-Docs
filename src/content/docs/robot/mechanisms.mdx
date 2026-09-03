@@ -1,14 +1,15 @@
 ---
 title: Mechanisms
-description: Grouping hardware and behavior into reusable subsystems with Mechanism.
+description: One subsystem, its hardware, and the commands that move it.
 sidebar:
   order: 2
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 
-A `Mechanism` represents a subsystem on your robot, an arm, a claw, a drivetrain, bundling the hardware it
-owns with the commands and periodic logic that control it.
+A `Mechanism` is one subsystem: an arm, a claw, a drivetrain.
+It holds the hardware for that subsystem, the commands that move it,
+and any logic that has to run every loop.
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
@@ -16,8 +17,9 @@ owns with the commands and periodic logic that control it.
 ```kotlin
 interface Mechanism {
     fun periodic() {}
-    fun instant(action: Runnable): Command
-    fun infinite(action: Runnable): Command
+    val defaultCommand: Command get() = infinite {}
+    fun instant(action: Runnable): CommandBuilder
+    fun infinite(action: Runnable): CommandBuilder
 }
 ```
 
@@ -27,8 +29,9 @@ interface Mechanism {
 ```java
 public interface Mechanism {
     default void periodic() {}
-    Command instant(Runnable action);
-    Command infinite(Runnable action);
+    default Command getDefaultCommand() { return infinite(() -> {}); }
+    CommandBuilder instant(Runnable action);
+    CommandBuilder infinite(Runnable action);
 }
 ```
 
@@ -37,17 +40,25 @@ public interface Mechanism {
 
 ## `periodic()`
 
-Called once per loop for every mechanism registered on your [`NextRobot`](/robot/nextrobot/)'s `mechanisms` set.
-Use it for anything that needs to run continuously regardless of what commands are active,
-such as reading a sensor, running a background PID loop to hold position, and so on.
+Runs once per loop, for every mechanism listed in your [`NextRobot`](/robot/nextrobot/)'s `mechanisms` set.
+Put anything here that has to run no matter which command is active:
+reading a sensor, or a PID loop holding a position.
 
 ## `instant` and `infinite`
 
-Both build an [Ivy](/robot/commands/) command scoped to the mechanism,
-automatically calling `requiring(this)` so the scheduler treats it as exclusive to that mechanism.
-This means that two commands can't fight over the same hardware at once.
-`instant` runs its action once;
-`infinite` re-runs its action every loop until cancelled.
+Both build an [Ivy](/robot/commands/) command and call `requiring(this)` on it,
+so the scheduler knows the command owns this mechanism.
+Two commands can never drive the same hardware at the same time.
+`instant` runs its action once.
+`infinite` re-runs its action every loop until something cancels it.
+
+## `defaultCommand`
+
+The command that runs whenever nothing else has claimed the mechanism.
+NextFTC schedules it when the OpMode starts, at the lowest possible priority,
+so any real command you bind takes over and the default resumes once that command ends.
+The default default does nothing, so override it only if idle should mean something specific:
+holding an arm at its current position, or zeroing a motor's throttle.
 
 ## Example: a simple mechanism
 
@@ -78,11 +89,10 @@ public class Claw implements Mechanism {
 </TabItem>
 </Tabs>
 
-## Example: using `periodic()` for continuous logic
+## Example: using `periodic()`
 
-A mechanism can use `periodic()` for anything that needs to run every loop,
-independent of whatever command is currently active.
-For example, an intake that automatically stops once a sensor reports it has a piece:
+Here's an intake that stops itself once a distance sensor says it has a game piece.
+The check lives in `periodic()`, so it happens whether or not the intake command is running:
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
@@ -128,4 +138,5 @@ public class Intake implements Mechanism {
 </TabItem>
 </Tabs>
 
-Register the mechanism on your [`NextRobot`](/robot/nextrobot/) so its `periodic()` gets called every loop.
+`periodic()` only runs if the mechanism is in your [`NextRobot`](/robot/nextrobot/)'s `mechanisms` set.
+Forgetting to add it there is the usual reason this kind of code seems to do nothing.
