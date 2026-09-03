@@ -27,8 +27,9 @@ The body runs a slice per loop and suspends at each `await`, `wait`, or `yield`,
 so it never blocks the OpMode loop.
 
 <Aside type="caution" title="Kotlin only">
-Coroutine commands use Kotlin `suspend` functions and can't be written from Java.
-Java code can still schedule and compose the resulting `Command` like any other.
+  Coroutine commands use Kotlin `suspend` functions and can't be written from
+  Java. Java code can still schedule and compose the resulting `Command` like
+  any other.
 </Aside>
 
 ## Creating one
@@ -67,15 +68,15 @@ A builder makes a fresh coroutine every time it starts, so one builder can be sc
 
 Inside the braces you're in a `CommandScope`:
 
-| Function                    | Suspends until...                                            |
-| --------------------------- | ------------------------------------------------------------ |
-| `yield()`                   | the next loop iteration                                       |
-| `wait(seconds)`             | at least that many seconds have passed                        |
-| `waitUntil { condition }`   | the condition is true, checked once per loop                  |
-| `await(command)`            | that command is done                                          |
-| `awaitAll(vararg commands)` | every one of those commands is done                           |
-| `awaitAny(vararg commands)` | any one of them is done; returns the winner                   |
-| `fork(command)`             | nothing — it starts the command and returns immediately       |
+| Function                    | Suspends until...                                       |
+| --------------------------- | ------------------------------------------------------- |
+| `yield()`                   | the next loop iteration                                 |
+| `wait(seconds)`             | at least that many seconds have passed                  |
+| `waitUntil { condition }`   | the condition is true, checked once per loop            |
+| `await(command)`            | that command is done                                    |
+| `awaitAll(vararg commands)` | every one of those commands is done                     |
+| `awaitAny(vararg commands)` | any one of them is done; returns the winner             |
+| `fork(command)`             | nothing — it starts the command and returns immediately |
 
 `awaitAll` and `awaitAny` also accept a `Collection<Command>`.
 `awaitAny` ends the winner naturally and interrupts the rest, and throws if you pass it no commands.
@@ -133,7 +134,7 @@ To hand a command to the scheduler instead, so it competes for requirements norm
 call `schedule()` on it rather than `await`ing it.
 
 Forked commands keep running after the line that started them.
-The coroutine command isn't done until the body has returned *and* every forked command has finished.
+The coroutine command isn't done until the body has returned _and_ every forked command has finished.
 
 ## Cancellation
 
@@ -158,7 +159,8 @@ The continuation is kept, and the coroutine picks up where it left off when the 
 ## Rules of the body
 
 Everything between two suspension points runs in a single loop iteration, so the usual rule applies:
-don't write anything blocking. A loop with no suspension point in it hangs the robot.
+don't write anything blocking.
+A loop with no suspension point in it hangs the robot.
 
 ```kotlin
 // hangs: nothing yields
@@ -168,4 +170,5 @@ while (!sensor.isWithinDistance(2.0)) { }
 waitUntil { sensor.isWithinDistance(2.0) }
 ```
 
-`Thread.sleep` has the same problem. Use `wait(seconds)`.
+`Thread.sleep` has the same problem.
+Use `wait(seconds)`.
