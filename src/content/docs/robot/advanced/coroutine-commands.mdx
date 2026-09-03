@@ -1,0 +1,171 @@
+---
+title: Coroutine Commands
+description: Writing a command as sequential Kotlin instead of a start/execute/done state machine.
+sidebar:
+  order: 1
+---
+
+import { Aside } from "@astrojs/starlight/components";
+
+A normal [command](/robot/commands/) is a state machine: `start()`, then `execute()` once per loop,
+then `done()` decides when it's over.
+Anything sequential has to be split across those calls, or built out of nested groups.
+
+A coroutine command lets you write the same thing top to bottom:
+
+```kotlin
+val scorePiece = command {
+    await(arm.toHigh())
+    wait(0.5)
+    await(claw.open())
+    fork(lights.flash())
+    await(arm.toRest())
+}
+```
+
+The body runs a slice per loop and suspends at each `await`, `wait`, or `yield`,
+so it never blocks the OpMode loop.
+
+<Aside type="caution" title="Kotlin only">
+Coroutine commands use Kotlin `suspend` functions and can't be written from Java.
+Java code can still schedule and compose the resulting `Command` like any other.
+</Aside>
+
+## Creating one
+
+`command { }` is a top-level function, and `Mechanism.coroutine { }` is the same thing with
+`requiring(this)` already applied:
+
+```kotlin
+class Arm : Mechanism {
+    val motor = NextMotor("armMotor")
+
+    fun scorePiece() = coroutine {
+        await(toHigh())
+        wait(0.5)
+        await(toRest())
+    }
+}
+```
+
+Both return a `CoroutineCommandBuilder`, which is itself a `Command`.
+You can schedule it, bind it to a [trigger](/robot/triggers/), or drop it into an Ivy group without
+calling `build()`:
+
+```kotlin
+command {
+    await(arm.toHigh())
+    await(claw.open())
+}.requiring(arm, claw).setPriority(1).schedule()
+```
+
+`requiring`, `setPriority`, `setInterruptedBehavior`, `setConflictBehavior`, and
+`setBlockedBehavior` work the same as on Ivy's `CommandBuilder`.
+A builder makes a fresh coroutine every time it starts, so one builder can be scheduled repeatedly.
+
+## What the body can do
+
+Inside the braces you're in a `CommandScope`:
+
+| Function                    | Suspends until...                                            |
+| --------------------------- | ------------------------------------------------------------ |
+| `yield()`                   | the next loop iteration                                       |
+| `wait(seconds)`             | at least that many seconds have passed                        |
+| `waitUntil { condition }`   | the condition is true, checked once per loop                  |
+| `await(command)`            | that command is done                                          |
+| `awaitAll(vararg commands)` | every one of those commands is done                           |
+| `awaitAny(vararg commands)` | any one of them is done; returns the winner                   |
+| `fork(command)`             | nothing — it starts the command and returns immediately       |
+
+`awaitAll` and `awaitAny` also accept a `Collection<Command>`.
+`awaitAny` ends the winner naturally and interrupts the rest, and throws if you pass it no commands.
+
+### Doing work every loop
+
+The other functions all wait for something. `yield()` is the one you use when the body itself has
+work to do on each iteration: write a loop, do one iteration's worth of work, and `yield()` at the
+bottom.
+
+```kotlin
+fun ramp() = coroutine {
+    var power = 0.0
+    while (power < 1.0) {
+        power += 0.02
+        motor.throttle = power
+        yield()
+    }
+    motor.throttle = 1.0
+}
+```
+
+Each `yield()` gives the loop back to the OpMode, and the next `execute()` picks up on the line
+after it, so this ramp takes fifty loop iterations rather than fifty iterations of a `while` loop
+in one.
+
+The same shape works for anything that has to keep running while it waits.
+Here the arm holds its target with a controller until it's close enough, then stops:
+
+```kotlin
+fun goTo(target: Double) = coroutine {
+    controller.target = target
+    while (abs(motor.currentPosition - target) > 10.0) {
+        motor.throttle = controller.calculate(motor.currentPosition)
+        yield()
+    }
+    motor.throttle = 0.0
+}
+```
+
+## Inline commands and requirements
+
+Commands you `await` or `fork` are driven by the coroutine, not by the `Scheduler`.
+They never reach the scheduler, so **their requirements are not checked for conflicts**.
+List every mechanism the body touches on the enclosing command:
+
+```kotlin
+command {
+    await(arm.toHigh())
+    await(claw.open())
+}.requiring(arm, claw)
+```
+
+To hand a command to the scheduler instead, so it competes for requirements normally,
+call `schedule()` on it rather than `await`ing it.
+
+Forked commands keep running after the line that started them.
+The coroutine command isn't done until the body has returned *and* every forked command has finished.
+
+## Cancellation
+
+Interrupting a coroutine command resumes the body with a `CancellationException`.
+That means `finally` blocks run, and any command you were `await`ing or had `fork`ed is ended with
+`INTERRUPTED`:
+
+```kotlin
+fun intakeUntilLoaded() = coroutine {
+    try {
+        fork(run())
+        waitUntil { sensor.isWithinDistance(2.0) }
+    } finally {
+        motor.throttle = 0.0
+    }
+}
+```
+
+If the command's `InterruptedBehavior` is `SUSPEND`, the body isn't unwound.
+The continuation is kept, and the coroutine picks up where it left off when the scheduler resumes it.
+
+## Rules of the body
+
+Everything between two suspension points runs in a single loop iteration, so the usual rule applies:
+don't write anything blocking. A loop with no suspension point in it hangs the robot.
+
+```kotlin
+// hangs: nothing yields
+while (!sensor.isWithinDistance(2.0)) { }
+
+// correct
+waitUntil { sensor.isWithinDistance(2.0) }
+```
+
+`Thread.sleep` has the same problem. Use `wait(seconds)`.
