@@ -1,20 +1,47 @@
-/* NextFTC brand colors, based on the primary blue (#005bab) used across NextFTC-Docs. */
+/* Dark mode colors. */
 :root {
-  --sl-color-accent-low: #d6e6f5;
-  --sl-color-accent: #005bab;
-  --sl-color-accent-high: #143a5c;
+  --sl-color-accent-low: #113145;
+  --sl-color-accent: #0099ff;
+  --sl-color-accent-high: #b0dbf7;
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #e8eff6;
+  --sl-color-gray-2: #bbc3cc;
+  --sl-color-gray-3: #7d8e9e;
+  --sl-color-gray-4: #4b5a69;
+  --sl-color-gray-5: #26303b;
+  --sl-color-gray-6: #161f27;
+  --sl-color-black: #0c1014;
 }
 
-:root[data-theme="dark"] {
-  --sl-color-accent-low: #163650;
-  --sl-color-accent: #3a86c8;
-  --sl-color-accent-high: #b3d3ec;
+/* Light mode colors. */
+:root[data-theme='light'] {
+  --sl-color-accent-low: #c6e6fa;
+  --sl-color-accent: #0099ff;
+  --sl-color-accent-high: #0b5a8e;
+
+  --sl-color-text-accent: var(--sl-color-accent-high);
+  --sl-color-white: #0c1014;
+  --sl-color-gray-1: #1b2835;
+  --sl-color-gray-2: #2c3a48;
+  --sl-color-gray-3: #4b5a69;
+  --sl-color-gray-4: #7d8e9e;
+  --sl-color-gray-5: #bbc3cc;
+  --sl-color-gray-6: #e8eff6;
+  --sl-color-gray-7: #f3f7fa;
+  --sl-color-black: #ffffff;
 }
 
-/* The NextFTC wordmark logo has extra empty space below the text, so it reads
-   as vertically off-center in the header. Nudge it down to compensate. */
-.site-title img {
-  margin-top: 0.5rem;
+:root {
+  --nextftc-font-title: var(--font-science-gothic);
+}
+
+h1#_top,
+.site-title {
+  font-family: var(--nextftc-font-title);
+}
+
+.header .header {
+  min-height: 0;
 }
 
 .sidebar-pane .sidebar-group .sidebar-group summary {

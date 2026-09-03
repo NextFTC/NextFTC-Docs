@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightThemeGalaxy from "starlight-theme-galaxy";
 import starlightSidebarTopics from "starlight-sidebar-topics";
@@ -8,16 +8,28 @@ import starlightLinksValidator from "starlight-links-validator";
 // https://astro.build/config
 export default defineConfig({
   site: "https://beta.nextftc.dev",
+  fonts: [
+    {
+      provider: fontProviders.google(),
+      name: "Science Gothic",
+      cssVariable: "--font-science-gothic",
+      weights: ["400 900"],
+      subsets: ["latin"],
+    },
+  ],
   integrations: [
     starlight({
       title: "NextFTC",
       logo: {
-        light: "./src/assets/nextftc-banner-light.png",
-        dark: "./src/assets/nextftc-banner-dark.png",
+        light: "./src/assets/wordmark-light.svg",
+        dark: "./src/assets/wordmark-dark.svg",
         replacesTitle: true,
       },
       favicon: "/favicon.svg",
       customCss: ["./src/styles/custom.css"],
+      components: {
+        Head: "./src/components/Head.astro",
+      },
       social: [
         {
           icon: "github",
