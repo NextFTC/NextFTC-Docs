@@ -1,0 +1,8 @@
+---
+// Starlight's default <Head>, plus the @font-face rules and --font-science-gothic
+import Default from "@astrojs/starlight/components/Head.astro";
+import Font from "astro/components/Font.astro";
+---
+
+<Default><slot /></Default>
+<Font cssVariable="--font-science-gothic" preload />

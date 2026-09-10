@@ -7,21 +7,22 @@ sidebar:
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 
-NextFTC doesn't define its own command framework.
-Instead, the `robot` module builds directly on top of [Ivy](https://pedropathing.com/docs/ivy),
-Pedro Pathing's command-based scheduling library.
-If you've used Ivy, WPILib commands, or NextFTC v1's command system before,
-this will feel familiar.
+NextFTC v2 has no command framework of its own.
+The `robot` module uses [Ivy](https://pedropathing.com/docs/ivy),
+Pedro Pathing's command library.
+Ivy is a simple command library inpsired by WPILib and NextFTC v1,
+so if you've written WPILib commands or NextFTC v1 commands, Ivy's `Command` will look about the same.
 
-This page covers the small surface of Ivy that the `robot` module touches directly.
-For the full command API, such as sequential and parallel groups, `Command.Builder`, and everything else,
-see [Ivy's documentation](https://pedropathing.com/docs/ivy).
+This page covers only the parts of Ivy you touch through the `robot` module.
+Sequential and parallel groups, `Command.build()`, and the rest live in
+[Ivy's documentation](https://pedropathing.com/docs/ivy).
 
-## Building commands from a Mechanism
+## Building commands from a mechanism
 
-The most common way to create a command is through [`Mechanism.instant`](/robot/mechanisms/) and
-[`Mechanism.infinite`](/robot/mechanisms/), which wrap Ivy's `Commands.instant`/`Commands.infinite` and
-automatically call `requiring(this)`, so the scheduler knows the command owns that mechanism's hardware:
+Most commands come from [`Mechanism.instant`](/robot/mechanisms/) and
+[`Mechanism.infinite`](/robot/mechanisms/).
+Both call Ivy's `Commands.instant`/`Commands.infinite` and then `requiring(this)`,
+which tells the scheduler the command owns that mechanism's hardware.
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
@@ -50,18 +51,23 @@ public class Intake implements Mechanism {
 </TabItem>
 </Tabs>
 
-A command built with `infinite` keeps running (recomputing its body every loop) until it's cancelled,
-useful for anything driven continuously by gamepad input.
-`instant` runs its body once and finishes immediately.
+`instant` runs its action once and finishes on the same loop.
+`infinite` re-runs its action every loop and never finishes on its own,
+so something has to cancel it.
+That makes `infinite` the right choice for anything fed by gamepad input,
+where the value changes every loop.
 
-## Checking and cancelling commands
+## Starting, checking, and cancelling
 
-Two `Command` members you'll reach for often, both from Ivy:
-`isScheduled` (whether the command is currently running) and `cancel()` (stop it early).
-You'll see these used by [triggers](/robot/triggers/) to start and stop commands in response to gamepad input.
+Three `Command` methods from Ivy come up outside of triggers:
+`schedule()` hands the command to the scheduler,
+`cancel()` stops it early,
+and `isScheduled` reports whether it's running right now.
+
+NextFTC provides [`Trigger`s](/robot/triggers/), which start and stop commands based on
+gamepad input, mechanism or sensor state, or other conditions.
 
 ## Learn more
 
-For everything else, such as composing commands into sequences and parallel groups,
-writing custom commands from scratch, and the full `Scheduler` API,
-head to [Ivy's documentation](https://pedropathing.com/docs/ivy).
+Sequences, parallel groups, custom commands written from scratch, and the `Scheduler` API
+are all in [Ivy's documentation](https://pedropathing.com/docs/ivy).
