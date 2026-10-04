@@ -21,7 +21,7 @@ All of these below are interchangeable with `NextFeedbackCRServo`.
 val armServo = NextFeedbackServo("armServo", NextAnalogInput("armEncoder"))
 
 // By Lynx Module and port
-val armServo = NextFeedbackServo(RobotController.expansionHub, 0, NextAnalogInput(RobotController.expansionHub, 0))
+val armServo = NextFeedbackServo(RobotController.controlHub, 0, NextAnalogInput(RobotController.controlHub, 0))
 ```
 
 </TabItem>
@@ -32,7 +32,7 @@ val armServo = NextFeedbackServo(RobotController.expansionHub, 0, NextAnalogInpu
 NextFeedbackServo armServo = new NextFeedbackServo("armServo", new NextAnalogInput("armEncoder"));
 
 // By Lynx Module and port
-NextFeedbackServo armServo = new NextFeedbackServo(RobotController.getExpansionHub(), 0, new NextAnalogInput(RobotController.getExpansionHub(), 0));
+NextFeedbackServo armServo = new NextFeedbackServo(RobotController.controlHub(), 0, new NextAnalogInput(RobotController.controlHub(), 0));
 ```
 
 </TabItem>

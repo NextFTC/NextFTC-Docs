@@ -66,8 +66,10 @@ export default defineConfig({
               { slug: "robot/mechanisms" },
               { slug: "robot/nextrobot" },
               { slug: "robot/nextopmode" },
+              { slug: "robot/command-gamepad" },
               { slug: "robot/triggers" },
               { slug: "robot/drive-commands" },
+              { slug: "robot/telemetry" },
               { slug: "robot/project-structure" },
               {
                 label: "Advanced",
@@ -101,6 +103,12 @@ export default defineConfig({
             link: "/control/",
             icon: "document",
             items: [{ autogenerate: { directory: "control" } }],
+          },
+          {
+            label: "References",
+            link: "/references/example-repos",
+            icon: "open-book",
+            items: [{ autogenerate: { directory: "references" } }],
           },
         ]),
         starlightThemeGalaxy(),

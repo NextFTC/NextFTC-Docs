@@ -1,0 +1,79 @@
+---
+title: Command Gamepad
+description: Mapping gamepad buttons to Triggers with CommandGamepad
+sidebar:
+  order: 5
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`CommandGamepad` wraps the standard FTC `Gamepad` and exposes its buttons and sticks as command-based `Trigger`s.
+This lets you map controller inputs directly to commands using the WPILib-style Trigger API.
+
+## Creating a CommandGamepad
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val gp1 = CommandGamepad(gamepad1)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+CommandGamepad gp1 = new CommandGamepad(gamepad1);
+```
+
+</TabItem>
+</Tabs>
+
+`CommandGamepad` accepts an optional `eventLoop` parameter, defaulting to `Trigger.defaultEventLoop`.
+You generally won't need to override it unless you're managing multiple event loops.
+
+## Usage
+
+Every `button` is exposed as a `Trigger`, which you can bind to commands with methods like `onTrue()` or `onFalse()` etc.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+gp1.circle.onTrue(robot.intake.on())
+gp1.circle.onFalse(robot.intake.off())
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+gp1.circle().onTrue(robot.intake.on());
+gp1.circle().onFalse(robot.intake.off());
+
+```
+
+</TabItem>
+</Tabs>
+
+### Sticks and Triggers
+
+Joysticks and gamepad triggers are exposed as `RangeTrigger`s instead of regular `Trigger`s,
+since they report an analog value rather than a boolean value, letting you
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+gp1.rightTrigger.isOver(0.2).onTrue(robot.launcher.launch())
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+gp1.rightTrigger().isOver(0.2).onTrue(robot.launcher.launch());
+```
+
+</TabItem>
+</Tabs>
