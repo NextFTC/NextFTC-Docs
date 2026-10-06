@@ -23,12 +23,15 @@ All four are plain fields on the class, so use them directly.
 Every one of these is optional.
 Override the ones you need:
 
-| Method               | Called                                           |
-| -------------------- | ------------------------------------------------ |
-| `disabledPeriodic()` | Repeatedly, while the Driver Station is in INIT. |
-| `start()`            | Once, right after the PLAY button is pressed.    |
-| `periodic()`         | Repeatedly, while the OpMode is running.         |
-| `end()`              | Once, when the OpMode finishes.                  |
+| Method                     | Called                                                 |
+| -------------------------- | ------------------------------------------------------ |
+| `disabledPeriodic()`       | Repeatedly, while the Driver Station is in INIT.       |
+| `start()`                  | Once, right after the PLAY button is pressed.          |
+| `periodic()`               | Repeatedly, while the OpMode is running.               |
+| `end()`                    | Once, when the OpMode finishes.                        |
+| `onControlHubBulkData()`   | Repeatedly, when the BlazeBulkReadHook produces data.  |
+| `onExpansionHubBulkData()` | Repeatedly, when the BlazeBulkReadHook produces data.  |
+| `onLocalizationData()`     | Work in progress.                                      |
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
@@ -104,6 +107,52 @@ class MyTeleop(robot: MyRobot) : NextOpMode(robot, BulkReadHook)
 ```java
 public class MyTeleop extends NextOpMode {
     public MyTeleop(MyRobot robot) { super(robot, BulkReadHook.INSTANCE); }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## `BlazeBulkReadHook`
+
+Using the BlazeFTC library, you may run your code much faster than is typically possible. 
+Blaze runs in the background, "behind" the SDK and polls data without any user input at all.
+On the Control Hub or on a USB Expansion Hub, a slow mode Bulk Read hook can easily provide data at 500 hz. 
+For more information on how that works, or to accelerate i2c calls, check out the [BlazeFTC Readme](https://github.com/owenpmckenna/blaze_ftc).
+To take advantage of Blaze via NextFTC, use the following setup:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+@NextTeleop(name = "My Teleop")
+@BlazeEnabled
+class MyTeleop(robot: MyRobot) : NextOpMode(robot, BlazeBulkReadHook(Type.EXPANSION_HUB, false)) {
+    override fun periodic() {
+        Telemetry.log("Status", "Running")
+    }
+    override fun onExpansionHubBulkData() {
+        //Run PID loops here
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+@NextTeleop(name = "My Teleop")
+@BlazeEnabled
+public class MyTeleop extends NextOpMode {
+    public MyTeleop(MyRobot robot) { super(robot, new BlazeBulkReadHook(Type.EXPANSION_HUB, false)); }
+    @Override
+    public void periodic() {
+        Telemetry.log("Status", "Running");
+    }
+    @Override
+    public void onExpansionHubBulkData() {
+        //Run PID loops here
+    }
 }
 ```
 
