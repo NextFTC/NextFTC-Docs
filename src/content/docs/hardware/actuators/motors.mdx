@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-import { Tabs, TabItem } from "@astrojs/starlight/components";
+import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 
 `NextMotor` is a lightweight wrapper around the standard FTC motor (`DcMotor` or `DcMotorEx`) that provides standard easy-to-use interface for throttling, voltage control, PIDS, and more
 
@@ -44,6 +44,36 @@ All constructors accept two optional parameters:
 | ---------------- | -------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `anglePerCount`  | `Angle`  | 1.0 rad | The angle that a motor's shaft rotates by for every 'tick' or 'count', used to convert 'ticks' into the number of rotations the motor has spun. |
 | `cacheTolerance` | `Double` | `0.01`  | Minimum change in `throttle` required before a new value is written to the motor.                                                               |
+
+<Aside type="caution">
+  If you're not using the NextOpMode as your opmode class, you will need to update the motors manually.
+  Without this, your motors will not run!
+</Aside>
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+// Every update
+NextMotor.motorEventLoop.poll()
+
+// When stopped
+NextMotor.motorEventLoop.clear()
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+// Every update
+NextMotor.Companion.getMotorEventLoop().poll()
+
+// When stopped
+NextMotor.Companion.getMotorEventLoop().clear()
+```
+
+</TabItem>
+</Tabs>
 
 ## Usage
 
