@@ -23,6 +23,7 @@ and add the following to your `dependencies` block:
 implementation 'dev.nextftc.v2:control:VERSION'
 implementation 'dev.nextftc.v2:hardware:VERSION'
 implementation 'dev.nextftc.v2:robot:VERSION'
+implementation 'dev.anygeneric:blazeftc:BLAZE_VERSION'
 ```
 
 <Aside type="tip" title="">
@@ -32,6 +33,7 @@ implementation 'dev.nextftc.v2:robot:VERSION'
     alt="Maven Central Version"
     src="https://img.shields.io/maven-central/v/dev.nextftc.v2/robot?strategy=highestVersion&style=flat&label=%20Version&labelColor=0c1014&color=0099ff"
   />
+  Replace the `BLAZE_VERSION` with the latest Blaze version. At the time of writing, this is version `0.1.62`. More up to date info can be found [here](https://github.com/owenpmckenna/blaze_ftc#normal-usage).
 </Aside>
 
 Note that the control and hardware modules can be used on their own.
@@ -42,5 +44,8 @@ add the following to the `repositories` block to allow Gradle to find the necess
 ```groovy
 maven {
     url 'https://repo.dairy.foundation/releases'
+}
+maven {
+    url 'https://maven.anygeneric.dev/'
 }
 ```
