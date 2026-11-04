@@ -11,16 +11,19 @@
     "astro": "astro",
     "check": "astro check",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "generate-types": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.42.0",
+    "@astrojs/cloudflare": "^14.4.4",
+    "@astrojs/starlight": "^0.42.8",
     "@types/node": "^26.4.1",
-    "astro": "^7.3.1",
+    "astro": "^7.4.5",
     "sharp": "^0.34.5",
     "starlight-links-validator": "^0.26.0",
     "starlight-sidebar-topics": "^0.9.0",
-    "starlight-theme-galaxy": "^1.0.0"
+    "starlight-theme-galaxy": "^1.0.0",
+    "wrangler": "^4.157.0"
   },
   "devDependencies": {
     "prettier": "^3.9.6",

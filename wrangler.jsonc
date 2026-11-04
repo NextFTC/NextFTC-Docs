@@ -1,7 +1,9 @@
 {
   "name": "nextftc-docs",
   "compatibility_date": "2026-09-03",
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
   },
 }

@@ -5,9 +5,12 @@ import starlightThemeGalaxy from "starlight-theme-galaxy";
 import starlightSidebarTopics from "starlight-sidebar-topics";
 import starlightLinksValidator from "starlight-links-validator";
 
+import cloudflare from "@astrojs/cloudflare";
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://nextftc.dev",
+
   fonts: [
     {
       provider: fontProviders.google(),
@@ -17,6 +20,7 @@ export default defineConfig({
       subsets: ["latin"],
     },
   ],
+
   integrations: [
     starlight({
       title: "NextFTC",
@@ -116,4 +120,6 @@ export default defineConfig({
       ],
     }),
   ],
+
+  adapter: cloudflare({ prerenderEnvironment: "node" }),
 });
