@@ -1,3 +1,7 @@
+supportedArchitectures:
+  cpu:
+    - current
+    - wasm32
 allowBuilds:
   esbuild: true
   sharp: true
