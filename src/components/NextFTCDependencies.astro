@@ -1,0 +1,43 @@
+---
+import { Code } from "@astrojs/starlight/components";
+
+const fallbackVersion = "0.3.0";
+
+const code = `implementation 'dev.nextftc.v2:control:${fallbackVersion}'
+implementation 'dev.nextftc.v2:hardware:${fallbackVersion}'
+implementation 'dev.nextftc.v2:robot:${fallbackVersion}'`;
+---
+
+<div data-nextftc-version={fallbackVersion}>
+  <Code code={code} lang="groovy" />
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-nextftc-version]");
+  const fallback = root?.dataset.nextftcVersion;
+
+  if (root && fallback) {
+    fetch("/api/versions")
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+      .then(({ version }: { version: string | null }) => {
+        if (!version || version === fallback) return;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          node.textContent = (node.textContent ?? "").replaceAll(
+            fallback,
+            version,
+          );
+        }
+        root.querySelectorAll("button[data-code]").forEach((button) => {
+          button.setAttribute(
+            "data-code",
+            (button.getAttribute("data-code") ?? "").replaceAll(
+              fallback,
+              version,
+            ),
+          );
+        });
+      })
+      .catch((error) => console.error(error));
+  }
+</script>

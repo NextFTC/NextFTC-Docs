@@ -7,6 +7,7 @@ prev:
 ---
 
 import { Aside } from "@astrojs/starlight/components";
+import NextFTCDependencies from "../../../components/NextFTCDependencies.astro";
 
 <Aside type='danger'>
     Installing NextFTC v2 in a project that already has NextFTC v1 will work,
@@ -17,26 +18,17 @@ import { Aside } from "@astrojs/starlight/components";
 </Aside>
 
 To install NextFTC in an FTC robot project, open `TeamCode/build.gradle`,
-and add the following to your `dependencies` block:
+and add **one** of the following to your `dependencies` block:
 
-```groovy
-implementation 'dev.nextftc.v2:control:VERSION'
-implementation 'dev.nextftc.v2:hardware:VERSION'
-implementation 'dev.nextftc.v2:robot:VERSION'
-```
+<NextFTCDependencies />
 
-<Aside type="tip" title="">
-  Replace the `VERSION` with the latest version from Maven Central (omitting the
-  `v` prefix):
-  <img
-    alt="Maven Central Version"
-    src="https://img.shields.io/maven-central/v/dev.nextftc.v2/robot?strategy=highestVersion&style=flat&label=%20Version&labelColor=0c1014&color=0099ff"
-  />
-</Aside>
+You only need the last module you plan to use, because each one pulls its dependencies:
 
-To use BlazeFTC for faster bulk reads, see the [BlazeFTC page](/robot/advanced/blazeftc/).
+- `robot` includes `hardware` and `control`.
+- `hardware` includes `control`.
+- `control` includes the `units` and `linalg` helper libraries.
 
-Note that the control and hardware modules can be used on their own.
+For most robot projects, that means adding only `robot`.
 
 If you are using the hardware and/or robot modules,
 add the following to the `repositories` block to allow Gradle to find the necessary dependencies.
