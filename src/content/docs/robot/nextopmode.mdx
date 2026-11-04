@@ -23,15 +23,12 @@ All four are plain fields on the class, so use them directly.
 Every one of these is optional.
 Override the ones you need:
 
-| Method                     | Called                                                 |
-| -------------------------- | ------------------------------------------------------ |
-| `disabledPeriodic()`       | Repeatedly, while the Driver Station is in INIT.       |
-| `start()`                  | Once, right after the PLAY button is pressed.          |
-| `periodic()`               | Repeatedly, while the OpMode is running.               |
-| `end()`                    | Once, when the OpMode finishes.                        |
-| `onControlHubBulkData()`   | Repeatedly, when the BlazeBulkReadHook produces data.  |
-| `onExpansionHubBulkData()` | Repeatedly, when the BlazeBulkReadHook produces data.  |
-| `onLocalizationData()`     | Work in progress.                                      |
+| Method               | Called                                           |
+| -------------------- | ------------------------------------------------ |
+| `disabledPeriodic()` | Repeatedly, while the Driver Station is in INIT. |
+| `start()`            | Once, right after the PLAY button is pressed.    |
+| `periodic()`         | Repeatedly, while the OpMode is running.         |
+| `end()`              | Once, when the OpMode finishes.                  |
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
@@ -113,11 +110,11 @@ public class MyTeleop extends NextOpMode {
 </TabItem>
 </Tabs>
 
-## `BlazeBulkReadHook`
+## BlazeFTC
 
-The [BlazeFTC](/robot/advanced/blazeftc/) library provides `BlazeBulkReadHook`,
-which polls hub data in the background at much higher rates than the SDK.
-See the BlazeFTC page for installation and usage.
+To poll hub data in the background at much higher rates than the SDK,
+extend `BlazeOpMode` instead of `NextOpMode` and use `BlazeBulkReadHook`.
+See the [BlazeFTC page](/robot/advanced/blazeftc/) for installation and usage.
 
 ## Registering with the Driver Station
 

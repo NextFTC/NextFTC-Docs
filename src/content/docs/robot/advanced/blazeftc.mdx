@@ -3,7 +3,8 @@ title: BlazeFTC
 description: Run your loops much faster using BlazeFTC bulk reads.
 ---
 
-import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import BlazeDependency from "../../../../components/BlazeDependency.astro";
 
 Using the BlazeFTC library, you may run your code much faster than is typically possible.
 Blaze runs in the background, "behind" the SDK and polls data without any user input at all.
@@ -14,13 +15,7 @@ For more information on how that works, or to accelerate i2c calls, check out th
 
 Open `TeamCode/build.gradle` and add the following to your `dependencies` block:
 
-```groovy
-implementation 'dev.anygeneric:blazeftc:BLAZE_VERSION'
-```
-
-<Aside type="tip" title="">
-  Replace the `BLAZE_VERSION` with the latest Blaze version. At the time of writing, this is version `0.1.67`. More up to date info can be found [here](https://github.com/owenpmckenna/blaze_ftc#normal-usage).
-</Aside>
+<BlazeDependency />
 
 Then add the following to the `repositories` block to allow Gradle to find it:
 
@@ -32,16 +27,17 @@ maven {
 
 ## Usage
 
-To take advantage of Blaze via [`NextOpMode`](/robot/nextopmode/), annotate your OpMode with `@BlazeEnabled`
-and pass a `BlazeBulkReadHook` as an extra constructor argument:
+To take advantage of Blaze, extend `BlazeOpMode` instead of [`NextOpMode`](/robot/nextopmode/).
+This turns Blaze on for the whole OpMode and routes motor writes through it.
+Then pass a `BlazeBulkReadHook` as an extra constructor argument to have Blaze provide bulk data:
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
 
 ```kotlin
 @NextTeleop(name = "My Teleop")
-@BlazeEnabled
-class MyTeleop(robot: MyRobot) : NextOpMode(robot, BlazeBulkReadHook(Type.EXPANSION_HUB, false)) {
+class MyTeleop(robot: MyRobot) :
+    BlazeOpMode(robot, BlazeBulkReadHook(NextLynxModule.Type.EXPANSION_HUB, false)) {
     override fun periodic() {
         Telemetry.log("Status", "Running")
     }
@@ -56,9 +52,10 @@ class MyTeleop(robot: MyRobot) : NextOpMode(robot, BlazeBulkReadHook(Type.EXPANS
 
 ```java
 @NextTeleop(name = "My Teleop")
-@BlazeEnabled
-public class MyTeleop extends NextOpMode {
-    public MyTeleop(MyRobot robot) { super(robot, new BlazeBulkReadHook(Type.EXPANSION_HUB, false)); }
+public class MyTeleop extends BlazeOpMode {
+    public MyTeleop(MyRobot robot) {
+        super(robot, new BlazeBulkReadHook(NextLynxModule.Type.EXPANSION_HUB, false));
+    }
     @Override
     public void periodic() {
         Telemetry.log("Status", "Running");
@@ -72,3 +69,23 @@ public class MyTeleop extends NextOpMode {
 
 </TabItem>
 </Tabs>
+
+`BlazeOpMode` provides these callbacks on top of the usual [`NextOpMode` lifecycle](/robot/nextopmode/#lifecycle):
+
+| Method                     | Called                                                        |
+| -------------------------- | ------------------------------------------------------------- |
+| `onControlHubBulkData()`   | When Blaze provides new Control Hub bulk data.                |
+| `onExpansionHubBulkData()` | When Blaze provides new Expansion Hub bulk data.              |
+| `onLocalizationData()`     | When Blaze provides new localization data (work in progress). |
+
+The two bulk data callbacks require a `BlazeBulkReadHook` on the matching hub.
+
+### `BlazeBulkReadHook`
+
+`BlazeBulkReadHook(hub, fastMode)` takes the hub to accelerate, either `NextLynxModule.Type.CONTROL_HUB` or `NextLynxModule.Type.EXPANSION_HUB`, and a `fastMode` flag:
+
+- `false` runs at about 500 hz and is very stable.
+- `true` is stable, but doing too many writes with it enabled could make it unstable.
+
+Do not use it together with [`BulkReadHook`](/robot/nextopmode/#bulkreadhook), and do not put two hooks on the same hub.
+The hook does nothing unless the OpMode extends `BlazeOpMode`.
