@@ -1,0 +1,52 @@
+---
+import { Code } from "@astrojs/starlight/components";
+
+interface Props {
+  code: string;
+  lang?: string;
+  product: "nextftc" | "blaze";
+  fallbackVersion: string;
+}
+
+const { code, lang = "groovy", product, fallbackVersion } = Astro.props;
+const rendered = code.replaceAll("VERSION", fallbackVersion);
+---
+
+<div data-version-product={product} data-version-fallback={fallbackVersion}>
+  <Code code={rendered} lang={lang} />
+</div>
+
+<script>
+  const blocks = document.querySelectorAll<HTMLElement>(
+    "[data-version-product]",
+  );
+
+  if (blocks.length > 0) {
+    fetch("/api/versions")
+      .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
+      .then((versions: Record<string, string | null>) => {
+        for (const root of blocks) {
+          const version = versions[root.dataset.versionProduct ?? ""];
+          const fallback = root.dataset.versionFallback;
+          if (!version || !fallback || version === fallback) continue;
+          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+          for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            node.textContent = (node.textContent ?? "").replaceAll(
+              fallback,
+              version,
+            );
+          }
+          root.querySelectorAll("button[data-code]").forEach((button) => {
+            button.setAttribute(
+              "data-code",
+              (button.getAttribute("data-code") ?? "").replaceAll(
+                fallback,
+                version,
+              ),
+            );
+          });
+        }
+      })
+      .catch((error) => console.error(error));
+  }
+</script>

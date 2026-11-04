@@ -110,6 +110,12 @@ public class MyTeleop extends NextOpMode {
 </TabItem>
 </Tabs>
 
+## BlazeFTC
+
+To poll hub data in the background at much higher rates than the SDK,
+extend `BlazeOpMode` instead of `NextOpMode` and use `BlazeBulkReadHook`.
+See the [BlazeFTC page](/robot/advanced/blazeftc/) for installation and usage.
+
 ## Registering with the Driver Station
 
 Annotate your class with `@NextTeleop`, `@NextAutonomous`, or `@NextUtility` to make it
