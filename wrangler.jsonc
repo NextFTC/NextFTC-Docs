@@ -6,4 +6,5 @@
     "directory": "./dist",
     "binding": "ASSETS",
   },
+  "previews": {},
 }
