@@ -1,0 +1,13 @@
+---
+import VersionedCode from "./VersionedCode.astro";
+
+const code = `implementation 'dev.nextftc.v2:control:VERSION'
+implementation 'dev.nextftc.v2:hardware:VERSION'
+implementation 'dev.nextftc.v2:robot:VERSION'`;
+---
+
+<VersionedCode
+  code={code}
+  product="nextftc-snapshot"
+  fallbackVersion="0.3.1-SNAPSHOT"
+/>

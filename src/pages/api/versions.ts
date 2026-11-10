@@ -5,6 +5,8 @@ export const prerender = false;
 const SOURCES = {
   nextftc:
     "https://repo1.maven.org/maven2/dev/nextftc/v2/robot/maven-metadata.xml",
+  "nextftc-snapshot":
+    "https://central.sonatype.com/repository/maven-snapshots/dev/nextftc/v2/robot/maven-metadata.xml",
   blaze:
     "https://maven.anygeneric.dev/dev/anygeneric/blazeftc/maven-metadata.xml",
 } as const;
@@ -14,7 +16,11 @@ async function latest(url: string): Promise<string | null> {
     cf: { cacheTtl: 300, cacheEverything: true },
   }).catch(() => null);
   const xml = res?.ok ? await res.text() : "";
-  return xml.match(/<release>([^<]+)<\/release>/)?.[1] ?? null;
+  return (
+    xml.match(/<release>([^<]+)<\/release>/)?.[1] ??
+    xml.match(/<latest>([^<]+)<\/latest>/)?.[1] ??
+    null
+  );
 }
 
 export const GET: APIRoute = async () => {

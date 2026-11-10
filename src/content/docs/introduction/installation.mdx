@@ -8,6 +8,7 @@ prev:
 
 import { Aside } from "@astrojs/starlight/components";
 import NextFTCDependencies from "../../../components/NextFTCDependencies.astro";
+import NextFTCSnapshotDependencies from "../../../components/NextFTCSnapshotDependencies.astro";
 
 <Aside type='danger'>
     Installing NextFTC v2 in a project that already has NextFTC v1 will work,
@@ -38,3 +39,32 @@ maven {
     url 'https://repo.dairy.foundation/releases'
 }
 ```
+
+## Snapshots
+
+Snapshots are builds of the latest unreleased code for testing and iteration.
+Features added in snapshot versions may not work as expected
+and may also change in between snapshot builds.
+API documentation for snapshot versions can be found at
+[kdoc.nextftc.dev/snapshot](https://kdoc.nextftc.dev/snapshot).
+
+<Aside type="caution">
+  Snapshots can change or break without warning. Do not use a snapshot build of
+  NextFTC at competitions without testing first.
+</Aside>
+
+Add the Maven Central snapshots repository to the `repositories` block:
+
+```groovy
+maven {
+    url 'https://central.sonatype.com/repository/maven-snapshots/'
+}
+```
+
+Then use a snapshot version _instead of_ the release dependency
+(there should only be one `dev.nextftc.v2:robot` dependency):
+
+<NextFTCSnapshotDependencies />
+
+If you experience bugs or have feedback about a snapshot,
+feel free to tell us at the [NextFTC discord server](https://nextftc.dev/discord)!
