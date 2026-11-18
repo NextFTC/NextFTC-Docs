@@ -1,0 +1,249 @@
+---
+title: Loggables and structs
+description: Logging custom classes with TelemetryLoggable, structs, and type handlers
+sidebar:
+  order: 3
+  label: Loggables and structs
+---
+
+import { Aside, Tabs, TabItem } from "@astrojs/starlight/components";
+
+`Telemetry.log(name, value)` logs numbers, booleans, strings, and primitive arrays directly.
+Any other object is logged in one of three ways: as several separate values (a `TelemetryLoggable`), as one packed value (a struct), or through a handler that converts it to something simpler (a type handler).
+
+When more than one applies, `log` uses the first of these that matches:
+
+1. A fixed encoding, for numbers, booleans, strings, and primitive arrays.
+2. A registered type handler.
+3. A schema already registered or reflected for the class, such as the built-in geometry types.
+4. `TelemetryLoggable`.
+5. A struct, with a schema built by reflection.
+
+## `TelemetryLoggable`
+
+A class that holds several values can implement `TelemetryLoggable`.
+When the object is passed to `log`, its `logTo` function is called with a table named after the name given to `log`, and the object writes its own fields into it.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class DriveState(val left: Double, val right: Double) : TelemetryLoggable {
+    override fun logTo(table: TelemetryTable) {
+        table.log("left", left)
+        table.log("right", right)
+    }
+}
+
+Telemetry.log("Drive", driveState) // /Drive/left and /Drive/right
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+class DriveState implements TelemetryLoggable {
+    @Override
+    public void logTo(TelemetryTable table) {
+        table.log("left", left);
+        table.log("right", right);
+    }
+}
+
+Telemetry.log("Drive", driveState); // /Drive/left and /Drive/right
+```
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution">
+  The fields are written one at a time, so a reader can see some from this loop
+  and some from the last. If the fields must stay consistent with each other,
+  log a struct instead.
+</Aside>
+
+## Structs
+
+A struct packs a fixed set of fields into one binary value, using [WPILib's struct format](https://github.com/wpilibsuite/allwpilib/blob/main/wpiutil/doc/struct.adoc).
+Every field is written at the same instant, and AdvantageScope recognizes the names of WPILib's built-in structs, such as `Pose2d`, and can draw them on a field view.
+
+A class that is not a `TelemetryLoggable` and has no handler is logged as a struct.
+The first time one is logged, its layout is built by reflection and kept for later calls.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class ShooterState(val velocity: Double, val angle: Double, val loaded: Boolean)
+
+Telemetry.log("Shooter", ShooterState(motor.velocity, hood.angle, loaded))
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class ShooterState {
+    public final double velocity;
+    public final double angle;
+    public final boolean loaded;
+
+    // constructor omitted
+}
+
+Telemetry.log("Shooter", new ShooterState(motor.getVelocity(), hood.getAngle(), loaded));
+```
+
+</TabItem>
+</Tabs>
+
+### Built-in structs
+
+The geometry types in the control module are registered by default: `Rotation2d`, `Pose2d`, `Transform2d`, `Twist2d`, `ChassisVelocities`, `ChassisAccelerations`, `PoseVelocity2d`, and `PoseAcceleration2d`.
+Pedro Pathing's `Pose`, `Vector2D`, `Twist`, and `Velocity` are registered when a `PedroMechanism` is created, so a `follower.pose` can be logged directly and appears in AdvantageScope as a `Pose2d` in meters and radians.
+
+### What is reflected
+
+A Kotlin class contributes its public properties.
+A Java class contributes its public fields and its getters, which are public no-argument methods named `getX`, or `isX` for a boolean, and are named `x` in the struct.
+A Java record contributes its components.
+
+Each field has to be a `Boolean`, `Byte`, `Short`, `Int`, `Long`, `Float`, `Double`, or `DoubleArray`, or another concrete class, which becomes a nested struct.
+Strings, nullable fields, collections, enums, and platform types such as `java.util.List` have no struct encoding.
+Logging a class with one of them logs a warning that names the field.
+Nested classes also can't refer back to a class that contains them.
+
+Reflection boxes every value it reads, so it is suited to a few structs logged each loop.
+A [custom schema](#custom-schemas) avoids the cost.
+
+### Annotations
+
+The annotations in `dev.nextftc.util.struct` adjust how a class is reflected.
+
+| Annotation               | Applies to                 | Description                                                                                                                                                               |
+| ------------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@StructName("Pose2d")`  | Class                      | Sets the struct's type name, which otherwise is the class's simple name.
+AdvantageScope draws a class as a pose or rotation only if it has WPILib's name and field layout. |
+| `@StructIgnore`          | Property, field, or getter | Leaves the field out of the struct, as for a computed value or a nullable field.                                                                                          |
+| `@StructSize(3)`         | `DoubleArray` field        | Declares the array's fixed length, which a struct requires. `DoubleArray` is the only supported array type.                                                               |
+| `@StructOrder("x", "y")` | Class                      | Puts the listed fields first, in the order given, followed by the rest alphabetically.                                                                                    |
+
+The order of the fields is the layout of the packed data, so changing it changes the struct.
+By default a Kotlin class uses its constructor order, a Java record uses its component order, and any other Java class uses alphabetical order, because the JVM does not keep the order in which fields were declared.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+@StructName("ArmState")
+class Arm(
+    val angle: Double,
+    @StructSize(3) val jointAngles: DoubleArray,
+) {
+    @StructIgnore
+    val description: String = "arm"
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+@StructName("ArmState")
+public class Arm {
+    public double angle;
+
+    @StructSize(3)
+    public double[] jointAngles;
+
+    @StructIgnore
+    public String description = "arm";
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Lists of structs
+
+A list can't be passed to `log`, so lists of structs are logged with `logArray` or through a topic created with `arrayTopic`.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+Telemetry.logArray("Vision/Targets", targets)
+
+private val targetTopic = Telemetry.arrayTopic<Pose2d>("Vision/Targets")
+targetTopic.set(targets)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+private final Topic<List<Pose2d>> targetTopic =
+    Telemetry.arrayTopic("Vision/Targets", Pose2d.class);
+
+targetTopic.set(targets);
+```
+
+</TabItem>
+</Tabs>
+
+### Custom schemas
+
+A schema can be written by hand for a class that can't be annotated or that reflection can't handle, such as one with a `String` field.
+It is also faster than reflection, because values are not boxed.
+The fields are declared in order with `structSchema`, and the schema is registered for the class before the class is first logged.
+
+```kotlin
+val shooterSchema = structSchema<ShooterState>("ShooterState") {
+    float64("velocity") { it.velocity }
+    float64("angle") { it.angle }
+    boolean("loaded") { it.loaded }
+}
+
+Telemetry.registry.structs.register(ShooterState::class, shooterSchema)
+```
+
+The available field types are `boolean`, `int8`, `int16`, `int32`, `int64`, `float32`, `float64`, `float64Array(name, length)`, and `struct(name, schema)` for a nested struct.
+Field names have to be valid identifiers, and a struct must declare at least one field.
+A schema can also be used for a single topic by passing it to `Telemetry.topic(name, schema)`.
+
+<Aside>
+  The builder takes a Kotlin lambda with a receiver, so in a Java project the
+  schema is best written in a Kotlin file. Registering a different schema for a
+  class that already has one throws an exception.
+</Aside>
+
+## Type handlers
+
+A `TelemetryTypeHandler` logs a class the team doesn't control, such as a type from another library, as something simpler.
+It is registered on `Telemetry.registry.handlers`, and applies to its class and every subclass.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+Telemetry.registry.handlers.register<Color> { table, name, color ->
+    table.log(name, color.toHexString())
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Telemetry.getRegistry().getHandlers().register(Color.class, (table, name, color) ->
+    table.log(name, color.toHexString()));
+```
+
+</TabItem>
+</Tabs>
+
+When several handlers could apply to a value, the one registered for the nearest type is used.
+A handler takes priority over the value's own `TelemetryLoggable`, but not over the fixed encodings for numbers and strings.
+
+`Measure` has a handler by default.
+It logs the value as a `double` in its base unit and sets the topic's unit, so `12.0.inches` is logged as `0.3048` with the unit `m`.

@@ -1,0 +1,181 @@
+---
+title: Telemetry backends
+description: Where logged telemetry goes, how to configure it, and how to add a new destination
+sidebar:
+  order: 2
+  label: Backends
+---
+
+import { Aside, Tabs, TabItem } from "@astrojs/starlight/components";
+
+A backend receives the values logged with [`Telemetry`](/robot/telemetry/).
+Robot code never calls a backend directly.
+The registry sends each value to every backend registered for its path.
+
+Before each OpMode's `init`, NextFTC registers three backends and, when the OpMode stops, closes them.
+The Driver Station backend shows each path as a line of telemetry, the log backend writes a file, and the NetworkTables backend publishes to a server that dashboards connect to.
+Each can be turned off in the [configuration](#configuration).
+
+## Driver Station
+
+The Driver Station backend adds one line per path to the OpMode's SDK `telemetry`.
+The lines are retained, so they survive the SDK's automatic clearing and don't disturb lines the OpMode adds itself.
+
+The Driver Station screen fills up fast,
+so the `driverStationPrefixes` setting can be used to only show some entries on the DS.
+The log file and the NetworkTables server still get everything.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+FtcTelemetry.config.driverStationPrefixes = listOf("/Drive", "/Arm")
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+FtcTelemetry.getConfig().setDriverStationPrefixes(Arrays.asList("/Drive", "/Arm"));
+```
+
+</TabItem>
+</Tabs>
+
+Values are shown as text.
+A unit is printed after the value, and an array or struct is shown with its contents.
+The lines refresh only when `FtcTelemetry.update()` runs.
+
+## Log files
+
+Each OpMode writes a [WPILOG](https://github.com/wpilibsuite/allwpilib/blob/main/wpiutil/doc/datalog.adoc) to `/sdcard/FIRST/nextftc/logs`.
+The file name has the start time and the OpMode name.
+Logs are flushed every 250 ms and at the end of every OpMode stop.
+Logs can be opened in AdvantageScope.
+
+While the NetworkTables server is running, it also serves the logs over HTTP, so they can be downloaded from a browser without pulling them off the Robot Controller.
+
+| Page     | Control Hub                         | Robot Controller phone              |
+| -------- | ----------------------------------- | ----------------------------------- |
+| Log list | `http://192.168.43.1:5810/download` | `http://192.168.49.1:5810/download` |
+
+The same list is available as JSON from `/logs`, and a single file can be downloaded from `/logs/<filename>`.
+
+<Aside>
+  A log that is still being written is listed but can't be downloaded until its
+  OpMode stops.
+</Aside>
+
+## NetworkTables server
+
+The NetworkTables backend publishes to a [NetworkTables 4 server](https://docs.wpilib.org/en/latest/docs/software/networktables/networktables-intro.html) on port 5810 for as long as the Robot Controller app is open.
+The server outlives individual OpModes, so a dashboard stays connected between them.
+
+In AdvantageScope or Elastic, connecting to `192.168.43.1` on a Control Hub or `192.168.49.1` on a phone shows values live.
+Struct values such as poses arrive typed, so AdvantageScope can draw them.
+
+As of NextFTC v0.4.0, the NT4 server is read-only, so dashboards cannot change values.
+
+### Turning the server off
+
+To stop the server, for example before a competition, run the **Disable NextFTC Telemetry Server** OpMode.
+Run **Enable NextFTC Telemetry Server** to start it again.
+The Robot Controller saves the choice across app restarts, and the log file and Driver Station lines keep working while the server is off.
+
+The same switch is available from code.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+FtcTelemetry.setServerEnabled(false)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+FtcTelemetry.setServerEnabled(false);
+```
+
+</TabItem>
+</Tabs>
+
+Turning the server off stops it immediately and disconnects any dashboards.
+Turning it back on takes effect when the next OpMode initializes.
+
+## Configuration
+
+The backends are controlled by `FtcTelemetry.config`.
+Its settings are not saved, so they return to their defaults whenever the app restarts and have to be set in code.
+
+| Setting                  | Default                      | Description                                                                                                                                                            |
+| ------------------------ | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `logToFile`              | `true`                       | Writes a WPILOG for each OpMode.                                                                                                                                       |
+| `logDirectory`           | `/sdcard/FIRST/nextftc/logs` | The directory logs are written to.                                                                                                                                     |
+| `logFlushIntervalMillis` | `250`                        | The minimum time between log flushes, which `update()` performs.
+Zero or less turns it off, and the log is then flushed only when its buffer fills or the OpMode stops. |
+| `liveServer`             | `true`                       | Serves NetworkTables 4 for dashboards.                                                                                                                                 |
+| `serverPort`             | `5810`                       | The port the server listens on.
+The server starts once, at the first OpMode that runs with it enabled, and keeps that port until the app restarts.                      |
+| `driverStation`          | `true`                       | Shows logged values on the Driver Station.                                                                                                                             |
+| `driverStationPrefixes`  | empty                        | If not empty, only paths at or under these prefixes are shown on the Driver Station.                                                                                   |
+
+NextFTC reads the settings right before an OpMode's `init`, when it creates the backends.
+A setting changed inside `init` or later applies from the next OpMode.
+The best place to set them is the constructor of the [`NextRobot`](/robot/nextrobot/), which NextFTC constructs when the code loads, before any OpMode initializes.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class MyRobot : NextRobot {
+    init {
+        FtcTelemetry.config.logToFile = false
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class MyRobot implements NextRobot {
+    public MyRobot() {
+        FtcTelemetry.getConfig().logToFile = false;
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Custom backends
+
+A custom backend implements `TelemetryBackend`, whose `entry` function returns an object that receives the values for one path.
+It is registered on `Telemetry.registry`, optionally with path prefixes that limit it to those paths.
+A backend must be thread-safe.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+Telemetry.registry.register(MyBackend())
+Telemetry.registry.register(MyBackend(), "/Drive") // only /Drive and below
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Telemetry.getRegistry().register(new MyBackend());
+Telemetry.getRegistry().register(new MyBackend(), "/Drive"); // only /Drive and below
+```
+
+</TabItem>
+</Tabs>
+
+## Unit tests
+
+The `telemetry` module has no dependency on the FTC SDK or Android, so code that logs can be tested on a plain JVM.
+A `MockTelemetryBackend` registered on `Telemetry.registry` records what was logged so a test can check it.

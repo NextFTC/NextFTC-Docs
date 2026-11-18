@@ -73,8 +73,15 @@ export default defineConfig({
               { slug: "robot/command-gamepad" },
               { slug: "robot/triggers" },
               { slug: "robot/drive-commands" },
-              { slug: "robot/telemetry" },
               { slug: "robot/project-structure" },
+              {
+                label: "Telemetry",
+                items: [
+                  { slug: "robot/telemetry" },
+                  { slug: "robot/telemetry/backends" },
+                  { slug: "robot/telemetry/structs" },
+                ],
+              },
               {
                 label: "Advanced",
                 items: [{ autogenerate: { directory: "robot/advanced" } }],
