@@ -1,8 +1,6 @@
 ---
 title: Commands
 description: How NextFTC schedules commands, and where to find the full command API.
-sidebar:
-  order: 1
 ---
 
 import { Aside, Tabs, TabItem } from "@astrojs/starlight/components";
@@ -10,7 +8,7 @@ import { Aside, Tabs, TabItem } from "@astrojs/starlight/components";
 NextFTC v2 has no command framework of its own.
 The `robot` module uses [Ivy](https://pedropathing.com/docs/ivy),
 Pedro Pathing's command library.
-Ivy is a simple command library inpsired by WPILib and NextFTC v1,
+Ivy is a simple command library inspired by WPILib and NextFTC v1,
 so if you've written WPILib commands or NextFTC v1 commands, Ivy's `Command` will look about the same.
 
 This page covers only the parts of Ivy you touch through the `robot` module.
@@ -60,7 +58,7 @@ where the value changes every loop.
 <Aside type="tip" title="Sequencing Commands in Kotlin">
 
 Anything with steps in it, like raise the arm, wait, then open the claw, can be written as a
-[coroutine command](/robot/advanced/coroutine-commands/) instead of a nest of sequential and parallel groups.
+[coroutine command](/commands/coroutine-commands/) instead of a nest of sequential and parallel groups.
 This command is only available in Kotlin, but it can call Java methods and use Java classes.
 
 </Aside>
@@ -72,7 +70,7 @@ Three `Command` methods from Ivy come up outside of triggers:
 `cancel()` stops it early,
 and `isScheduled` reports whether it's running right now.
 
-NextFTC provides [`Trigger`s](/robot/triggers/), which start and stop commands based on
+NextFTC provides [`Trigger`s](/commands/triggers/), which start and stop commands based on
 gamepad input, mechanism or sensor state, or other conditions.
 
 ## Learn more

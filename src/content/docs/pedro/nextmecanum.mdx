@@ -1,0 +1,137 @@
+---
+title: NextMecanum
+description: Driving a Pedro Pathing follower with NextMotors.
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+`NextMecanum` is a drop-in replacement for Pedro Pathing's `Mecanum` drivetrain that drives the wheels with [`NextMotor`](/hardware/actuators/motors/)s.
+Use it wherever your Pedro constants create a `Mecanum`, such as the `drivetrain` argument of Pedro's `Follower` constructor.
+
+## Creating a NextMecanum
+
+There are three ways to construct a `NextMecanum`.
+
+### From a `NextMecanumConfig`
+
+`NextMecanumConfig` replaces Pedro's `MecanumConfig`.
+Each corner is configured with a Lynx module and port instead of a configuration name,
+so motors split across the Control Hub and an Expansion Hub need no special handling.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val driveConfig = NextMecanumConfig {
+    it.frontLeftModule.set(RobotController.controlHub)
+    it.frontLeftPort.set(0)
+    it.frontLeftDirection.set(DcMotorSimple.Direction.REVERSE)
+
+    it.frontRightModule.set(RobotController.controlHub)
+    it.frontRightPort.set(1)
+    it.frontRightDirection.set(DcMotorSimple.Direction.FORWARD)
+
+    it.backLeftModule.set(RobotController.expansionHub)
+    it.backLeftPort.set(0)
+    it.backLeftDirection.set(DcMotorSimple.Direction.REVERSE)
+
+    it.backRightModule.set(RobotController.expansionHub)
+    it.backRightPort.set(1)
+    it.backRightDirection.set(DcMotorSimple.Direction.FORWARD)
+}
+
+val drivetrain = NextMecanum(hardwareMap, driveConfig)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+NextMecanumConfig driveConfig = new NextMecanumConfig(config -> {
+    config.getFrontLeftModule().set(RobotController.controlHub());
+    config.getFrontLeftPort().set(0);
+    config.getFrontLeftDirection().set(DcMotorSimple.Direction.REVERSE);
+
+    config.getFrontRightModule().set(RobotController.controlHub());
+    config.getFrontRightPort().set(1);
+    config.getFrontRightDirection().set(DcMotorSimple.Direction.FORWARD);
+
+    config.getBackLeftModule().set(RobotController.expansionHub());
+    config.getBackLeftPort().set(0);
+    config.getBackLeftDirection().set(DcMotorSimple.Direction.REVERSE);
+
+    config.getBackRightModule().set(RobotController.expansionHub());
+    config.getBackRightPort().set(1);
+    config.getBackRightDirection().set(DcMotorSimple.Direction.FORWARD);
+});
+
+NextMecanum drivetrain = new NextMecanum(hardwareMap, driveConfig);
+```
+
+</TabItem>
+</Tabs>
+
+The module, port, and direction of every corner are required.
+Two more options have defaults:
+
+| Option            | Type      | Default | Description                                                    |
+| ----------------- | --------- | ------- | -------------------------------------------------------------- |
+| `manualBrakeMode` | `Boolean` | `true`  | Whether the motors brake at zero power while driving manually. |
+| `powerThreshold`  | `Double`  | `0.01`  | Smallest power change that triggers a hardware write.          |
+
+### From Pedro's `MecanumConfig`
+
+If you already have a Pedro `MecanumConfig`, pass it instead.
+`NextMecanum` looks up the motors by their configuration names, so the config works as is:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val drivetrain = NextMecanum(hardwareMap, mecanumConfig)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+NextMecanum drivetrain = new NextMecanum(hardwareMap, mecanumConfig);
+```
+
+</TabItem>
+</Tabs>
+
+### From existing `NextMotor`s
+
+To share motors with a drivetrain `Mechanism` you already have,
+pass the four `NextMotor`s in front-left, front-right, back-left, back-right order.
+An optional fifth argument sets `manualBrakeMode`, which defaults to `true`.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val drivetrain = NextMecanum(frontLeft, frontRight, backLeft, backRight)
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+NextMecanum drivetrain = new NextMecanum(frontLeft, frontRight, backLeft, backRight);
+```
+
+</TabItem>
+</Tabs>
+
+## Usage
+
+### Zero power behavior
+
+While Pedro is driving manually, the motors brake at zero power if `manualBrakeMode` is `true`.
+The rest of the time, including while following a path, they float.
+
+### `wheelPowers`
+
+The last wheel powers `NextMecanum` applied, normalized to `[-1.0, 1.0]`,
+as a `DoubleArray` in front-left, front-right, back-left, back-right order.

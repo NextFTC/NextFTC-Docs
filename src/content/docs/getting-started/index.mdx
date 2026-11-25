@@ -1,9 +1,6 @@
 ---
 title: Introduction
 description: What NextFTC is and how to get started.
-next:
-  label: Installation
-  link: /introduction/installation/
 ---
 
 import { Tabs, TabItem, CardGrid, Card } from "@astrojs/starlight/components";
@@ -11,27 +8,6 @@ import { Tabs, TabItem, CardGrid, Card } from "@astrojs/starlight/components";
 NextFTC is a command-based library for programming FTC robots, written in Kotlin with full support for Java.
 It's designed to let you write robot code that's expressive, reusable, and easy to reason about,
 without fighting the FTC SDK.
-
-<CardGrid>
-  <a href="/control/" style="text-decoration: none; display: contents;">
-    <Card title="Control" icon="setting">
-      PID, feedforward, motion profiling, and typed geometry and units, usable
-      on their own even outside of an FTC robot.
-    </Card>
-  </a>
-  <a href="/hardware/" style="text-decoration: none; display: contents;">
-    <Card title="Hardware" icon="random">
-      Lazily-initialized, caching wrappers around motors, servos, sensors, and
-      vision hardware.
-    </Card>
-  </a>
-  <a href="/robot/" style="text-decoration: none; display: contents;">
-    <Card title="Robot" icon="puzzle">
-      `NextRobot`, `Mechanism`, and `NextOpMode` tie everything together into a
-      command-based robot.
-    </Card>
-  </a>
-</CardGrid>
 
 ## Why NextFTC?
 
@@ -70,16 +46,15 @@ public class Claw implements Mechanism {
 ## Ivy
 
 NextFTC uses the [Ivy library](https://pedropathing.com/docs/ivy) as its underlying commands framework.
-If you already use Ivy, using NextFTC will be easy!
-If you don't, don't worry.
-Many of the concepts translate cleanly from other command frameworks,
+If you already use Ivy, you already know NextFTC's commands.
+If you don't, many of the concepts translate cleanly from other command frameworks,
 including NextFTC v1.
 
 ## Kotlin and Java
 
-NextFTC is written in Kotlin, but Java is treated as a first-class citizen, not an afterthought.
+NextFTC is written in Kotlin.
 Every public API is designed to read naturally from Java, and every code sample in these docs is shown in both languages.
 
-## Ready to get started?
+## Next steps
 
-Continue to [Installation](/introduction/installation/) to add NextFTC to your robot project.
+Continue to [Installation](/getting-started/installation/) to add NextFTC to your robot project.

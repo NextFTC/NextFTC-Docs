@@ -1,8 +1,6 @@
 ---
 title: Mechanisms
 description: One subsystem, its hardware, and the commands that move it.
-sidebar:
-  order: 2
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
@@ -47,21 +45,21 @@ reading a sensor, or a PID loop holding a position.
 
 ## `instant` and `infinite`
 
-Both build an [Ivy](/robot/commands/) command and call `requiring(this)` on it,
+Both build an [Ivy](/commands/) command and call `requiring(this)` on it,
 so the scheduler knows the command owns this mechanism.
 Two commands can never drive the same hardware at the same time.
 `instant` runs its action once.
 `infinite` re-runs its action every loop until something cancels it.
 
 Kotlin has a third: `coroutine { }` builds a
-[coroutine command](/robot/advanced/coroutine-commands/) requiring this mechanism,
+[coroutine command](/commands/coroutine-commands/) requiring this mechanism,
 for anything with steps in it.
 
 ## `defaultCommand`
 
 The command that runs whenever nothing else has claimed the mechanism.
 NextFTC schedules it when the OpMode starts, at the lowest possible priority,
-so any real command you bind takes over and the default resumes once that command ends.
+so any other command you bind takes over and the default resumes once that command ends.
 The default default does nothing, so override it only if idle should mean something specific:
 holding an arm at its current position, or zeroing a motor's throttle.
 

@@ -1,14 +1,12 @@
 ---
 title: Limelights
-description: Reading AprilTags and pose data with NextLimelight
-sidebar:
-  order: 1
+description: Reading AprilTags and pose data with NextLimelight.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 
-`NextLimelight` is a wrapper around the [Limelight3A](https://limelightvision.io/products/limelight-3a) that initializes the device lazily from the hardware map,
-while creating many useful methods.
+`NextLimelight` is a wrapper around the [Limelight3A](https://limelightvision.io/products/limelight-3a) that initializes the device lazily from the hardware map
+and adds methods for reading distance and pose.
 Any data that is not wrapped can be accessed through `camera`.
 
 ## Creating a NextLimelight

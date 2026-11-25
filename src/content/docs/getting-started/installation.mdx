@@ -1,20 +1,18 @@
 ---
 title: Installation
 description: How to install NextFTC libraries.
-prev:
-  label: Introduction
-  link: /introduction/
 ---
 
 import { Aside } from "@astrojs/starlight/components";
 import NextFTCDependencies from "../../../components/NextFTCDependencies.astro";
 import NextFTCSnapshotDependencies from "../../../components/NextFTCSnapshotDependencies.astro";
+import PedroDependency from "../../../components/PedroDependency.astro";
 
 <Aside type='danger'>
-    Installing NextFTC v2 in a project that already has NextFTC v1 will work,
-    but run into errors at build-time, as the libraries contain classes with the same name.
+    A project that has both NextFTC v1 and NextFTC v2 fails to build,
+    because the two libraries contain classes with the same names.
 
-    It is recommended to remove NextFTC v1 from your project and follow the migration guide (coming soon).
+    Remove NextFTC v1 from your project before installing v2, and follow the migration guide (coming soon).
 
 </Aside>
 
@@ -25,11 +23,12 @@ and add **one** of the following to your `dependencies` block:
 
 You only need the last module you plan to use, because each one pulls its dependencies:
 
-- `robot` includes `hardware` and `control`.
+- `robot` includes `hardware`, `control`, and `telemetry`.
 - `hardware` includes `control`.
-- `control` includes the `units` and `linalg` helper libraries.
+- `control` includes the `units`, `linalg`, and `util` helper libraries.
 
 For most robot projects, that means adding only `robot`.
+If you use Pedro Pathing, add `pedro` instead (see [Pedro Pathing](#pedro-pathing) below).
 
 If you are using the hardware and/or robot modules,
 add the following to the `repositories` block to allow Gradle to find the necessary dependencies.
@@ -39,6 +38,17 @@ maven {
     url 'https://repo.dairy.foundation/releases'
 }
 ```
+
+## Pedro Pathing
+
+The `pedro` module connects [Pedro Pathing](https://pedropathing.com/docs/pathing) to NextFTC.
+It includes `robot` and Pedro Pathing's `com.pedropathing:revhub` library,
+so add it instead of the `robot` dependency.
+Also add Ivy's `pedro` module for the path-following commands:
+
+<PedroDependency />
+
+See [Pedro Pathing](/pedro/) for setup and usage.
 
 ## Snapshots
 
@@ -66,5 +76,4 @@ Then use a snapshot version _instead of_ the release dependency
 
 <NextFTCSnapshotDependencies />
 
-If you experience bugs or have feedback about a snapshot,
-feel free to tell us at the [NextFTC discord server](https://nextftc.dev/discord)!
+Report snapshot bugs and feedback in the [NextFTC Discord server](https://nextftc.dev/discord).

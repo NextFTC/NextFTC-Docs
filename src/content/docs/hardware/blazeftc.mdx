@@ -1,14 +1,14 @@
 ---
 title: BlazeFTC
-description: Run your loops much faster using BlazeFTC bulk reads.
+description: Running your loops faster with BlazeFTC bulk reads.
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
-import BlazeDependency from "../../../../components/BlazeDependency.astro";
+import BlazeDependency from "../../../components/BlazeDependency.astro";
 
 Using the BlazeFTC library, you may run your code much faster than is typically possible.
 Blaze runs in the background, "behind" the SDK and polls data without any user input at all.
-On the Control Hub or on a USB Expansion Hub, a slow mode Bulk Read hook can easily provide data at 500 hz.
+On the Control Hub or on a USB Expansion Hub, a slow mode Bulk Read hook can provide data at 500 Hz.
 For more information on how that works, or to accelerate i2c calls, check out the [BlazeFTC Readme](https://github.com/owenpmckenna/blaze_ftc).
 
 ## Installation

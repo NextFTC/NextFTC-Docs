@@ -1,0 +1,8 @@
+---
+import VersionedCode from "./VersionedCode.astro";
+
+const code = `implementation 'dev.nextftc.v2:pedro:VERSION'
+implementation 'com.pedropathing.ivy:pedro:1.1.1'`;
+---
+
+<VersionedCode code={code} product="nextftc" fallbackVersion="0.4.0" />
