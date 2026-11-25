@@ -106,17 +106,17 @@ Turning it back on takes effect when the next OpMode initializes.
 The backends are controlled by `FtcTelemetry.config`.
 Its settings are not saved, so they return to their defaults whenever the app restarts and have to be set in code.
 
-| Setting                  | Default                      | Description                                                                                                                                                            |
-| ------------------------ | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `logToFile`              | `true`                       | Writes a WPILOG for each OpMode.                                                                                                                                       |
-| `logDirectory`           | `/sdcard/FIRST/nextftc/logs` | The directory logs are written to.                                                                                                                                     |
-| `logFlushIntervalMillis` | `250`                        | The minimum time between log flushes, which `update()` performs.
-Zero or less turns it off, and the log is then flushed only when its buffer fills or the OpMode stops. |
-| `liveServer`             | `true`                       | Serves NetworkTables 4 for dashboards.                                                                                                                                 |
-| `serverPort`             | `5810`                       | The port the server listens on.
-The server starts once, at the first OpMode that runs with it enabled, and keeps that port until the app restarts.                      |
-| `driverStation`          | `true`                       | Shows logged values on the Driver Station.                                                                                                                             |
-| `driverStationPrefixes`  | empty                        | If not empty, only paths at or under these prefixes are shown on the Driver Station.                                                                                   |
+| Setting                                                                                                            | Default                      | Description                                                                          |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------ |
+| `logToFile`                                                                                                        | `true`                       | Writes a WPILOG for each OpMode.                                                     |
+| `logDirectory`                                                                                                     | `/sdcard/FIRST/nextftc/logs` | The directory logs are written to.                                                   |
+| `logFlushIntervalMillis`                                                                                           | `250`                        | The minimum time between log flushes, which `update()` performs.                     |
+| Zero or less turns it off, and the log is then flushed only when its buffer fills or the OpMode stops.             |
+| `liveServer`                                                                                                       | `true`                       | Serves NetworkTables 4 for dashboards.                                               |
+| `serverPort`                                                                                                       | `5810`                       | The port the server listens on.                                                      |
+| The server starts once, at the first OpMode that runs with it enabled, and keeps that port until the app restarts. |
+| `driverStation`                                                                                                    | `true`                       | Shows logged values on the Driver Station.                                           |
+| `driverStationPrefixes`                                                                                            | empty                        | If not empty, only paths at or under these prefixes are shown on the Driver Station. |
 
 NextFTC reads the settings right before an OpMode's `init`, when it creates the backends.
 A setting changed inside `init` or later applies from the next OpMode.

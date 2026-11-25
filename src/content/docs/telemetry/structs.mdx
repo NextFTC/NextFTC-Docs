@@ -117,13 +117,13 @@ A [custom schema](#custom-schemas) avoids the cost.
 
 The annotations in `dev.nextftc.util.struct` adjust how a class is reflected.
 
-| Annotation               | Applies to                 | Description                                                                                                                                                               |
-| ------------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@StructName("Pose2d")`  | Class                      | Sets the struct's type name, which otherwise is the class's simple name.
-AdvantageScope draws a class as a pose or rotation only if it has WPILib's name and field layout. |
-| `@StructIgnore`          | Property, field, or getter | Leaves the field out of the struct, as for a computed value or a nullable field.                                                                                          |
-| `@StructSize(3)`         | `DoubleArray` field        | Declares the array's fixed length, which a struct requires. `DoubleArray` is the only supported array type.                                                               |
-| `@StructOrder("x", "y")` | Class                      | Puts the listed fields first, in the order given, followed by the rest alphabetically.                                                                                    |
+| Annotation                                                                                        | Applies to                 | Description                                                                                                 |
+| ------------------------------------------------------------------------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `@StructName("Pose2d")`                                                                           | Class                      | Sets the struct's type name, which otherwise is the class's simple name.                                    |
+| AdvantageScope draws a class as a pose or rotation only if it has WPILib's name and field layout. |
+| `@StructIgnore`                                                                                   | Property, field, or getter | Leaves the field out of the struct, as for a computed value or a nullable field.                            |
+| `@StructSize(3)`                                                                                  | `DoubleArray` field        | Declares the array's fixed length, which a struct requires. `DoubleArray` is the only supported array type. |
+| `@StructOrder("x", "y")`                                                                          | Class                      | Puts the listed fields first, in the order given, followed by the rest alphabetically.                      |
 
 The order of the fields is the layout of the packed data, so changing it changes the struct.
 By default a Kotlin class uses its constructor order, a Java record uses its component order, and any other Java class uses alphabetical order, because the JVM does not keep the order in which fields were declared.
