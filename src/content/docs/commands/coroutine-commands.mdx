@@ -1,13 +1,11 @@
 ---
 title: Coroutine Commands
 description: Writing a command as sequential Kotlin instead of a start/execute/done state machine.
-sidebar:
-  order: 1
 ---
 
 import { Aside } from "@astrojs/starlight/components";
 
-A normal [command](/robot/commands/) is a state machine: `start()`, then `execute()` once per loop,
+A normal [command](/commands/) is a state machine: `start()`, then `execute()` once per loop,
 then `done()` decides when it's over.
 Anything sequential has to be split across those calls, or built out of nested groups.
 
@@ -50,7 +48,7 @@ class Arm : Mechanism {
 ```
 
 Both return a `CoroutineCommandBuilder`, which is itself a `Command`.
-You can schedule it, bind it to a [trigger](/robot/triggers/), or drop it into an Ivy group without
+You can schedule it, bind it to a [trigger](/commands/triggers/), or drop it into an Ivy group without
 calling `build()`:
 
 ```kotlin

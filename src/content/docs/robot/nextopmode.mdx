@@ -1,8 +1,6 @@
 ---
 title: NextOpMode
 description: The base class for your OpModes. Gamepads, telemetry, and the hardware map are already fields.
-sidebar:
-  order: 4
 ---
 
 import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
@@ -10,7 +8,7 @@ import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 Every OpMode you write with NextFTC should xtend `NextOpMode`.
 NextFTC runs it inside a `LinearOpMode` for you,
 passes in your [`NextRobot`](/robot/nextrobot/),
-and ticks the command scheduler and [triggers](/robot/triggers/) every loop.
+and ticks the command scheduler and [triggers](/commands/triggers/) every loop.
 
 ## Fields
 
@@ -114,7 +112,7 @@ public class MyTeleop extends NextOpMode {
 
 To poll hub data in the background at much higher rates than the SDK,
 extend `BlazeOpMode` instead of `NextOpMode` and use `BlazeBulkReadHook`.
-See the [BlazeFTC page](/robot/advanced/blazeftc/) for installation and usage.
+See the [BlazeFTC page](/hardware/blazeftc/) for installation and usage.
 
 ## Registering with the Driver Station
 
