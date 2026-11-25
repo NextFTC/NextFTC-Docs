@@ -6,6 +6,7 @@ description: How to install NextFTC libraries.
 import { Aside } from "@astrojs/starlight/components";
 import NextFTCDependencies from "../../../components/NextFTCDependencies.astro";
 import NextFTCSnapshotDependencies from "../../../components/NextFTCSnapshotDependencies.astro";
+import PedroDependency from "../../../components/PedroDependency.astro";
 
 <Aside type='danger'>
     A project that has both NextFTC v1 and NextFTC v2 fails to build,
@@ -22,11 +23,12 @@ and add **one** of the following to your `dependencies` block:
 
 You only need the last module you plan to use, because each one pulls its dependencies:
 
-- `robot` includes `hardware` and `control`.
+- `robot` includes `hardware`, `control`, and `telemetry`.
 - `hardware` includes `control`.
-- `control` includes the `units` and `linalg` helper libraries.
+- `control` includes the `units`, `linalg`, and `util` helper libraries.
 
 For most robot projects, that means adding only `robot`.
+If you use Pedro Pathing, add `pedro` instead (see [Pedro Pathing](#pedro-pathing) below).
 
 If you are using the hardware and/or robot modules,
 add the following to the `repositories` block to allow Gradle to find the necessary dependencies.
@@ -36,6 +38,17 @@ maven {
     url 'https://repo.dairy.foundation/releases'
 }
 ```
+
+## Pedro Pathing
+
+The `pedro` module connects [Pedro Pathing](https://pedropathing.com/docs/pathing) to NextFTC.
+It includes `robot` and Pedro Pathing's `com.pedropathing:revhub` library,
+so add it instead of the `robot` dependency.
+Also add Ivy's `pedro` module for the path-following commands:
+
+<PedroDependency />
+
+See [Pedro Pathing](/pedro/) for setup and usage.
 
 ## Snapshots
 

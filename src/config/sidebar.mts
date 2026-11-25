@@ -38,6 +38,10 @@ export const sidebar: SidebarItem[] = [
     ],
   },
   {
+    label: "Pedro Pathing",
+    items: [{ label: "Overview", slug: "pedro" }, "pedro/nextmecanum"],
+  },
+  {
     label: "Telemetry",
     items: [
       { label: "Overview", slug: "telemetry" },

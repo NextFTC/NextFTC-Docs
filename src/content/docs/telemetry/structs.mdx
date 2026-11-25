@@ -97,7 +97,7 @@ Telemetry.log("Shooter", new ShooterState(motor.getVelocity(), hood.getAngle(), 
 ### Built-in structs
 
 The geometry types in the control module are registered by default: `Rotation2d`, `Pose2d`, `Transform2d`, `Twist2d`, `ChassisVelocities`, `ChassisAccelerations`, `PoseVelocity2d`, and `PoseAcceleration2d`.
-Pedro Pathing's `Pose`, `Vector2D`, `Twist`, and `Velocity` are registered when a `PedroMechanism` is created, so a `follower.pose` can be logged directly and appears in AdvantageScope as a `Pose2d` in meters and radians.
+Pedro Pathing's `Pose`, `Vector2D`, `Twist`, and `Velocity` are registered when a [`PedroMechanism`](/pedro/) is created, so `follower.pose()` can be logged directly and appears in AdvantageScope as a `Pose2d` in meters and radians.
 
 ### What is reflected
 

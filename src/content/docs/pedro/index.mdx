@@ -1,0 +1,204 @@
+---
+title: Pedro Pathing
+description: Running a Pedro Pathing follower as a NextFTC mechanism.
+---
+
+import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
+
+The `pedro` module connects [Pedro Pathing](https://pedropathing.com/docs/pathing) to NextFTC.
+`PedroMechanism` stores your Pedro `Follower` and updates it every loop,
+[`NextMecanum`](/pedro/nextmecanum/) drives the follower with `NextMotor`s,
+and Pedro's geometry types can be logged with `Telemetry`.
+The commands for following paths come from Ivy's `pedro` module.
+
+To add the module to your project, see [Installation](/getting-started/installation/#pedro-pathing).
+
+## `PedroMechanism`
+
+Add a `PedroMechanism` to your robot's `mechanisms` and pass it a function that builds your `Follower` from a `HardwareMap`,
+such as the `createFollower` method in your Pedro `Constants` class.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+class MyRobot : NextRobot {
+    val pedro = PedroMechanism(Constants::createFollower)
+
+    override val mechanisms = setOf(pedro)
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+public class MyRobot implements NextRobot {
+    PedroMechanism pedro = new PedroMechanism(Constants::createFollower);
+
+    @Override
+    public Set<Mechanism> getMechanisms() {
+        return Set.of(pedro);
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+The follower is built the first time you access it, so constructing a `PedroMechanism` in your robot's constructor is safe.
+Its `periodic()` calls `follower.update()` every loop, so don't call `update()` yourself.
+
+### Setting the starting pose
+
+Like other NextFTC hardware, the follower lives as long as the robot instance does, and every OpMode gets the same robot.
+Set the starting pose at the beginning of each OpMode, in its constructor:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+@NextAutonomous(name = "Close Auto")
+class CloseAuto(robot: MyRobot) : NextOpMode(robot) {
+    init {
+        robot.pedro.follower.setPose(Pose(0.0, 0.0, 0.0))
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+@NextAutonomous(name = "Close Auto")
+public class CloseAuto extends NextOpMode {
+    public CloseAuto(MyRobot robot) {
+        super(robot);
+        robot.pedro.follower().setPose(new Pose(0, 0, 0));
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+<Aside type="caution">
+  If you skip this, an OpMode starts from wherever the previous OpMode left the
+  follower.
+</Aside>
+
+## Following paths
+
+Ivy's `pedro` module provides `PedroCommands`, which builds commands around a `Follower`:
+
+| Method                   | What the command does                                                             |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| `follow(follower, path)` | Starts following `path`, and finishes when the follower reaches the end of it.    |
+| `hold(follower, pose)`   | Tells the follower to hold `pose`, and finishes on the same loop.                 |
+| `hold(follower)`         | Holds the follower's pose at the time you create the command, not when it starts. |
+
+They don't require any mechanism, so add `requiring(pedro)` to let the scheduler know they own the drivetrain.
+With Ivy's default settings, starting one then interrupts any other command that requires `pedro`.
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+@NextAutonomous(name = "Close Auto")
+class CloseAuto(private val robot: MyRobot) : NextOpMode(robot) {
+    override fun start() {
+        PedroCommands.follow(robot.pedro.follower, scorePath)
+            .requiring(robot.pedro)
+            .schedule()
+    }
+}
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+@NextAutonomous(name = "Close Auto")
+public class CloseAuto extends NextOpMode {
+    private final MyRobot robot;
+
+    public CloseAuto(MyRobot robot) {
+        super(robot);
+        this.robot = robot;
+    }
+
+    @Override
+    public void start() {
+        PedroCommands.follow(robot.pedro.follower(), scorePath)
+            .requiring(robot.pedro)
+            .schedule();
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`scorePath` is a `Path` you've built with Pedro.
+
+## Logging Pedro types
+
+Creating a `PedroMechanism` registers [struct](/telemetry/structs/) schemas for Pedro's geometry types,
+so you can pass them straight to `Telemetry.log`:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+Telemetry.log("Pose", robot.pedro.follower.pose())
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Telemetry.log("Pose", robot.pedro.follower().pose());
+```
+
+</TabItem>
+</Tabs>
+
+Pedro works in inches, so distances and speeds are converted to meters to match the WPILib layouts that AdvantageScope reads.
+Positions stay in Pedro's coordinate frame.
+
+| Pedro type               | Logged as           | Fields                                         |
+| ------------------------ | ------------------- | ---------------------------------------------- |
+| `Pose`                   | `Pose2d`            | `translation` in meters, `rotation` in radians |
+| `Vector2D`               | `Translation2d`     | `x`, `y` in meters                             |
+| `Twist` (robot frame)    | `ChassisVelocities` | `vx`, `vy` in m/s, `omega` in rad/s            |
+| `Velocity` (field frame) | `ChassisVelocities` | `vx`, `vy` in m/s, `omega` in rad/s            |
+
+### Showing poses on an AdvantageScope field
+
+AdvantageScope's FTC fields use the traditional FTC field coordinates: the origin is the center of the field, and the axes are rotated 90° from Pedro's.
+Pedro's origin is the bottom-left corner of the 144-inch field.
+A Pedro pose logged as is shows up shifted and rotated,
+so convert it before logging it for a field view:
+
+<Tabs syncKey="language">
+<TabItem label="Kotlin">
+
+```kotlin
+val pose = robot.pedro.follower.pose()
+Telemetry.log("FieldPose", Pose(72 - pose.y(), pose.x() - 72, pose.heading() + Math.PI / 2))
+```
+
+</TabItem>
+<TabItem label="Java">
+
+```java
+Pose pose = robot.pedro.follower().pose();
+Telemetry.log("FieldPose", new Pose(72 - pose.y(), pose.x() - 72, pose.heading() + Math.PI / 2));
+```
+
+</TabItem>
+</Tabs>
+
+This moves the origin to the field center and undoes Pedro's rotation, the reverse of Pedro's [FTC coordinate conversion](https://pedropathing.com/docs/pathing/reference/coordinates).
+Convert `Vector2D` points the same way, without the heading.
+Field-frame velocities need the rotation but not the shift.
