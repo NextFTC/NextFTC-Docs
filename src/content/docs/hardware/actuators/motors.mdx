@@ -1,11 +1,11 @@
 ---
 title: Motors
-description: Control motors with NextMotor
+description: Controlling motors with NextMotor.
 ---
 
 import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 
-`NextMotor` is a lightweight wrapper around the standard FTC motor (`DcMotor` or `DcMotorEx`) that provides standard easy-to-use interface for throttling, voltage control, PIDS, and more
+`NextMotor` is a lightweight wrapper around the standard FTC motor (`DcMotor` or `DcMotorEx`) with throttle, voltage, position, and velocity control, and support for following other motors.
 
 ## Creating a NextMotor
 
@@ -75,7 +75,7 @@ NextMotor.Companion.getMotorEventLoop().clear();
 
 ## Usage
 
-### Throttle Control
+### Throttle control
 
 Throttle Control allows the motor to be throttled from -1.0 (reverse) to 1.0 (full power).
 The value represents a fraction of the robot's total voltage.
@@ -99,7 +99,7 @@ myMotor.setThrottle(1.0)
 </TabItem>
 </Tabs>
 
-### Voltage Control
+### Voltage control
 
 Voltage Control allows the motor's power to be controlled more accurately and set to a specific voltage.
 
@@ -122,7 +122,7 @@ myMotor.setVoltage(Volts.of(12))
 </TabItem>
 </Tabs>
 
-### Positional Control
+### Positional control
 
 Positional control allows the motor's position to be controlled using a `PID` Controller
 
@@ -152,7 +152,7 @@ myMotor.getPositionConstants()
 </TabItem>
 </Tabs>
 
-#### Relative Positional Control
+#### Relative positional control
 
 This moves the motor to the designated position **relative** to the position of the motor during the robot's startup.
 
@@ -175,7 +175,7 @@ myMotor.setPositionSetpoint(Degrees.of(90))
 </TabItem>
 </Tabs>
 
-#### Absolute Positional Control
+#### Absolute positional control
 
 This makes the motor take the shortest path, regardless of rotations to an angle in the range [-180, 180] degrees.
 
@@ -198,9 +198,9 @@ myMotor.setAbsolutePositionSetpoint(Degrees.of(90))
 </TabItem>
 </Tabs>
 
-### Velocity Control
+### Velocity control
 
-Similar to [Positional Control](#positional-control) velocity control allows the motor's velocity to be controlled using a `PID` Controller
+Similar to [positional control](#positional-control), velocity control allows the motor's velocity to be controlled using a `PID` Controller
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">

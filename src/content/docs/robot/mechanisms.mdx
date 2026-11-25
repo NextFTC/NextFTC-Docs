@@ -59,7 +59,7 @@ for anything with steps in it.
 
 The command that runs whenever nothing else has claimed the mechanism.
 NextFTC schedules it when the OpMode starts, at the lowest possible priority,
-so any real command you bind takes over and the default resumes once that command ends.
+so any other command you bind takes over and the default resumes once that command ends.
 The default default does nothing, so override it only if idle should mean something specific:
 holding an arm at its current position, or zeroing a motor's throttle.
 

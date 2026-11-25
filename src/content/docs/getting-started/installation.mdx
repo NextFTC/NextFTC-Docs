@@ -8,10 +8,10 @@ import NextFTCDependencies from "../../../components/NextFTCDependencies.astro";
 import NextFTCSnapshotDependencies from "../../../components/NextFTCSnapshotDependencies.astro";
 
 <Aside type='danger'>
-    Installing NextFTC v2 in a project that already has NextFTC v1 will work,
-    but run into errors at build-time, as the libraries contain classes with the same name.
+    A project that has both NextFTC v1 and NextFTC v2 fails to build,
+    because the two libraries contain classes with the same names.
 
-    It is recommended to remove NextFTC v1 from your project and follow the migration guide (coming soon).
+    Remove NextFTC v1 from your project before installing v2, and follow the migration guide (coming soon).
 
 </Aside>
 
@@ -63,5 +63,4 @@ Then use a snapshot version _instead of_ the release dependency
 
 <NextFTCSnapshotDependencies />
 
-If you experience bugs or have feedback about a snapshot,
-feel free to tell us at the [NextFTC discord server](https://nextftc.dev/discord)!
+Report snapshot bugs and feedback in the [NextFTC Discord server](https://nextftc.dev/discord).
