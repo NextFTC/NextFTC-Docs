@@ -1,14 +1,11 @@
 ---
 title: Telemetry backends
 description: Where logged telemetry goes, how to configure it, and how to add a new destination
-sidebar:
-  order: 2
-  label: Backends
 ---
 
 import { Aside, Tabs, TabItem } from "@astrojs/starlight/components";
 
-A backend receives the values logged with [`Telemetry`](/robot/telemetry/).
+A backend receives the values logged with [`Telemetry`](/telemetry/).
 Robot code never calls a backend directly.
 The registry sends each value to every backend registered for its path.
 

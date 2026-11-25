@@ -1,15 +1,12 @@
 ---
 title: Telemetry
 description: Logging data to the Driver Station, a log file, and AdvantageScope with Telemetry
-sidebar:
-  order: 1
-  label: Telemetry
 ---
 
 import { Aside, Tabs, TabItem } from "@astrojs/starlight/components";
 
 By default, every value logged with `Telemetry` is shown on the Driver Station, written to a log file on the Robot Controller, and published over a NetworkTables server that dashboards such as AdvantageScope and Elastic can read.
-The destinations are called [backends](/robot/telemetry/backends/), and NextFTC creates them before each OpMode's `init` and closes them when it stops.
+The destinations are called [backends](/telemetry/backends/), and NextFTC creates them before each OpMode's `init` and closes them when it stops.
 
 The `telemetry` module contains the logging API and has no dependency on the FTC SDK.
 The `telemetry-ftc` module connects it to the OpMode lifecycle.
@@ -32,7 +29,7 @@ A value that can't be logged is reported as a warning in the Robot Controller lo
 ## Logging values
 
 The simplest way to log is `Telemetry.log(name, value)`.
-Numbers, booleans, strings, and primitive arrays are logged to a topic of the matching type, and any other object is logged as a [struct](/robot/telemetry/structs/).
+Numbers, booleans, strings, and primitive arrays are logged to a topic of the matching type, and any other object is logged as a [struct](/telemetry/structs/).
 
 <Tabs syncKey="language">
 <TabItem label="Kotlin">
@@ -158,5 +155,5 @@ FtcTelemetry.update();
 
 ## Learn more
 
-- [Telemetry backends](/robot/telemetry/backends/)
-- [Loggables and structs](/robot/telemetry/structs/)
+- [Telemetry backends](/telemetry/backends/)
+- [Loggables and structs](/telemetry/structs/)
